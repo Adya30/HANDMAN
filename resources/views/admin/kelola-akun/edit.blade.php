@@ -16,88 +16,104 @@
         </div>
     </div>
 
-    @if ($errors->any())
-        <div class="p-4 text-sm text-red-800 bg-red-50 border border-red-100 rounded-xl">
-            <div class="font-medium mb-1">Terjadi kesalahan input:</div>
-            <ul class="list-disc pl-5 space-y-0.5">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <form action="{{ route('kelola-akun.update', $user->id) }}" method="POST" class="space-y-6">
+        <form id="form-akun" action="{{ route('kelola-akun.update', $user->id) }}" method="POST" class="space-y-6" data-redirect="{{ route('kelola-akun.index') }}" novalidate>
             @csrf
             @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Nama Lengkap</label>
                     <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-nama_lengkap"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Email</label>
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-email"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Password <span class="text-xs text-gray-400 font-normal">(Kosongkan jika tidak ingin diubah)</span></label>
-                    <input type="password" name="password" class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <div class="relative w-full">
+                        <input type="password" id="password" name="password" class="w-full px-4 py-2.5 pr-11 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                        <button type="button" onclick="const p = document.getElementById('password'); p.type = p.type === 'password' ? 'text' : 'password'; this.querySelector('i').classList.toggle('fa-eye'); this.querySelector('i').classList.toggle('fa-eye-slash');" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fa-solid fa-eye text-sm"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-password"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">No. Telepon</label>
-                    <input type="text" name="no_telp" value="{{ old('no_telp', $user->no_telp) }}" class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <input type="text" name="no_telp" value="{{ old('no_telp', $user->no_telp) }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-no_telp"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Jenis Kelamin</label>
                     <select name="jenis_kelamin" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                        <option value="" disabled {{ old('jenis_kelamin', $user->jenis_kelamin) == '' ? 'selected' : '' }}>Pilih Jenis Kelamin</option>
                         <option value="L" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
                         <option value="P" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
                     </select>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-jenis_kelamin"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                    <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir ? (\Carbon\Carbon::parse($user->tanggal_lahir)->format('Y-m-d')) : '') }}" class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir ? (\Carbon\Carbon::parse($user->tanggal_lahir)->format('Y-m-d')) : '') }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-tanggal_lahir"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Status Pegawai</label>
-                    <input type="text" name="status_pegawai" value="{{ old('status_pegawai', $user->status_pegawai) }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <select name="status_pegawai" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                        <option value="" disabled {{ old('status_pegawai', $user->status_pegawai) == '' ? 'selected' : '' }}>Pilih Status Pegawai</option>
+                        <option value="magang" {{ old('status_pegawai', $user->status_pegawai) == 'magang' ? 'selected' : '' }}>Magang</option>
+                        <option value="tetap" {{ old('status_pegawai', $user->status_pegawai) == 'tetap' ? 'selected' : '' }}>Tetap</option>
+                    </select>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-status_pegawai"></p>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-sm font-medium text-gray-700">Role</label>
-                    <input type="text" name="nama_role" value="{{ old('nama_role', $user->nama_role) }}" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                    <select name="nama_role" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                        <option value="" disabled {{ old('nama_role', $user->nama_role) == '' ? 'selected' : '' }}>Pilih Role</option>
+                        <option value="manager" {{ old('nama_role', $user->nama_role) == 'manager' ? 'selected' : '' }}>Manager</option>
+                        <option value="staff" {{ old('nama_role', $user->nama_role) == 'staff' ? 'selected' : '' }}>Staff</option>
+                    </select>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-nama_role"></p>
                 </div>
 
                 <div class="space-y-1.5 md:col-span-2">
                     <label class="text-sm font-medium text-gray-700">Departemen</label>
                     <select name="departemen_id" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">
+                        <option value="" disabled {{ old('departemen_id', $user->departemen_id) == '' ? 'selected' : '' }}>Pilih Departemen</option>
                         @foreach($departemens as $dept)
                             <option value="{{ $dept->id }}" {{ old('departemen_id', $user->departemen_id) == $dept->id ? 'selected' : '' }}>{{ $dept->nama_departemen }}</option>
                         @endforeach
                     </select>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-departemen_id"></p>
                 </div>
 
                 <div class="space-y-1.5 md:col-span-2">
                     <label class="text-sm font-medium text-gray-700">Alamat</label>
-                    <textarea name="alamat" rows="3" class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">{{ old('alamat', $user->alamat) }}</textarea>
+                    <textarea name="alamat" rows="3" required class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">{{ old('alamat', $user->alamat) }}</textarea>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-alamat"></p>
                 </div>
 
                 <div class="space-y-1.5 md:col-span-2">
                     <label class="text-sm font-medium text-gray-700">Deskripsi User</label>
                     <textarea name="deskripsi_user" rows="3" class="w-full px-4 py-2.5 text-sm text-gray-800 bg-white border border-gray-200 rounded-xl focus:border-[#3B28CC] focus:ring-1 focus:ring-[#3B28CC] outline-none transition-all">{{ old('deskripsi_user', $user->deskripsi_user) }}</textarea>
+                    <p class="text-xs text-red-600 error-msg hidden" id="error-deskripsi_user"></p>
                 </div>
             </div>
 
             <div class="flex items-center justify-end pt-4 border-t border-gray-100">
-                <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-[#3B28CC] hover:bg-opacity-90 rounded-xl shadow-sm transition-colors">
+                <button type="button" onclick="openModal('confirm')" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-[#3B28CC] hover:bg-opacity-90 rounded-xl shadow-sm transition-colors cursor-pointer">
                     Perbarui Akun
                 </button>
             </div>
@@ -105,4 +121,12 @@
     </div>
 
 </div>
+
+<x-confirm-modal id="confirm" title="Konfirmasi Perbarui Akun" message="Apakah Anda yakin data yang diubah sudah benar dan ingin memperbarui informasi akun ini?" action="executeGlobalAjaxSubmit('form-akun', 'confirm')" method="POST" type="primary" />
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initRealTimeValidation('form-akun');
+    });
+</script>
 @endsection

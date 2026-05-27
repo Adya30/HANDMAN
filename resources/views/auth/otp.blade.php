@@ -2,10 +2,9 @@
 
 @section('content')
 <div class="w-full h-screen flex flex-col md:flex-row overflow-hidden bg-white">
-
     <div class="w-full md:w-[50%] h-full p-8 md:p-16 flex flex-col justify-between items-stretch overflow-hidden">
         <div class="flex items-center gap-2 shrink-0">
-            <img src="{{ asset('assets/logo.png') }}" alt="Logo HandMan" class="w-8 h-8 object-contain">
+            <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
             <span class="text-xl font-bold text-[#3B28CC]">HandMan</span>
         </div>
 
@@ -25,13 +24,13 @@
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-500 text-center mb-3">Masukkan 6 Digit Kode OTP</label>
-                    <input type="text" id="otp_input" name="otp_input" maxlength="6" placeholder="000000" autocomplete="one-time-code" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-lg tracking-[0.75em] text-center font-bold text-gray-800">
+                    <input type="text" id="otp_input" name="otp_input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="000000" autocomplete="one-time-code" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-lg tracking-[0.75em] text-center font-bold text-gray-800">
                     @error('otp_input')
                         <p class="text-xs text-red-500 mt-2 pl-1 text-center">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <button type="submit" id="verify_button" class="w-full bg-[#3B28CC] hover:bg-[#2A1BA3] disabled:bg-gray-400 text-white font-medium py-3 rounded-full transition shadow-lg shadow-indigo-100 mt-2 cursor-pointer disabled:cursor-not-allowed">
+                <button type="submit" id="verify_button" class="w-full bg-[#3B28CC] hover:bg-[#2A1BA3] text-white font-medium py-3 rounded-full transition shadow-lg shadow-indigo-100 mt-2 cursor-pointer">
                     Verifikasi OTP
                 </button>
             </form>
@@ -50,6 +49,12 @@
         <h2 class="text-3xl lg:text-4xl font-bold mb-4 tracking-wide leading-tight shrink-0">Sistem Management<br>Tugas Kantor</h2>
         <p class="text-sm lg:text-base opacity-80 font-light mt-2 shrink-0">Nama Perusahaan</p>
     </div>
-
 </div>
+
+<script>
+    const otpInput = document.getElementById('otp_input');
+    otpInput.addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
 @endsection

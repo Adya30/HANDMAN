@@ -42,7 +42,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'tanggal_lahir' => 'date',
-        'umur' => 'integer',
         'otp_expires_at' => 'datetime',
     ];
 

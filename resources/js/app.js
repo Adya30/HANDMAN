@@ -1,3 +1,5 @@
-import './eye';
-import './process-button';
+import './eye.js';
+import './process-button.js';
 import './navbar.js';
+import './form-realtime.js';
+import './index-realtime.js';
