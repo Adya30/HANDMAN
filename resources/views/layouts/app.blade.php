@@ -11,22 +11,22 @@
 <body class="bg-gray-50 min-h-screen font-sans antialiased" x-data="{ sidebarOpen: false }">
 
     @auth
-        @include('components.sidebar')
+        <div class="flex min-h-screen bg-gray-50">
+            @include('components.sidebar')
 
-        <div class="md:pl-64 flex flex-col min-h-screen">
-            @include('components.topbar')
+            <div class="flex-1 flex flex-col min-w-0">
+                @include('components.topbar')
 
-            <main class="flex-1 p-4 sm:p-6">
-                @yield('content')
-            </main>
+                <main class="flex-1 px-4 sm:px-6 mt-4 overflow-x-hidden md:ml-64">
+                    @yield('content')
+                </main>
+            </div>
         </div>
     @endauth
 
     @guest
         @yield('content')
     @endguest
-
-
 
 </body>
 </html>

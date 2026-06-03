@@ -4,38 +4,23 @@
 <div class="space-y-6">
     <div>
         <h1 class="text-2xl font-bold text-gray-900">Dashboard Staff</h1>
-        <p class="text-sm text-gray-500 mt-0.5">Selesaikan tugas harian Anda hari ini.</p>
+        <p class="text-sm text-gray-500">Selesaikan tugas Anda sebelum deadline.</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tugas Saya</span>
-                <h3 class="text-2xl font-bold text-gray-800">5</h3>
-            </div>
-            <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-[#3B28CC]">
-                <i class="fa-solid fa-list-check text-xl"></i>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Deadline Hari Ini</span>
-                <h3 class="text-2xl font-bold text-gray-800">2</h3>
-            </div>
-            <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-600">
-                <i class="fa-solid fa-calendar-exclamation text-xl"></i>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Selesai Total</span>
-                <h3 class="text-2xl font-bold text-gray-800">12</h3>
-            </div>
-            <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
-                <i class="fa-solid fa-circle-check text-xl"></i>
-            </div>
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <h2 class="text-lg font-bold mb-4">Tugas Saya</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-gray-500 border-b">
+                    <tr>
+                        <th class="pb-3">Nama Tugas</th>
+                        <th class="pb-3">Deadline</th>
+                        <th class="pb-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    </tbody>
+            </table>
         </div>
     </div>
 </div>

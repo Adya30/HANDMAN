@@ -3,6 +3,7 @@
 use App\Http\Controllers\c_auth;
 use App\Http\Controllers\c_kelolaAkun;
 use App\Http\Controllers\c_departemen;
+use App\Http\Controllers\c_kelolaTugas;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,11 +22,6 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [c_auth::class, 'showLogin'])->name('login');
     Route::post('/login', [c_auth::class, 'login'])->name('login.submit');
-
-    Route::get('/forgot-password', [c_auth::class, 'showForgotPassword'])->name('password.request');
-    Route::post('/forgot-password', [c_auth::class, 'sendResetLink'])->name('password.email');
-    Route::get('/reset-password/{token}', [c_auth::class, 'showResetPassword'])->name('password.reset');
-    Route::post('/reset-password', [c_auth::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,9 +35,15 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:manager')->group(function () {
         Route::get('/manager/dashboard', function () { return view('manager.dashboard'); })->name('manager.dashboard');
+        Route::resource('tugas', c_kelolaTugas::class);
+        Route::patch('/tugas/{id}/konfirmasi', [c_kelolaTugas::class, 'konfirmasiTerima'])->name('tugas.konfirmasi');
     });
 
     Route::middleware('role:staff')->group(function () {
         Route::get('/staff/dashboard', function () { return view('staff.dashboard'); })->name('staff.dashboard');
+        Route::get('/staff/tugas', [c_kelolaTugas::class, 'index'])->name('staff.tugas.index');
+        Route::post('/tugas/{id}/submit', [c_kelolaTugas::class, 'submitTugas'])->name('tugas.submit');
+        Route::put('/lampiran/{id}/update', [c_kelolaTugas::class, 'updateLampiran'])->name('lampiran.update');
+        Route::delete('/lampiran/{id}/hapus', [c_kelolaTugas::class, 'hapusSubmit'])->name('lampiran.destroy');
     });
 });

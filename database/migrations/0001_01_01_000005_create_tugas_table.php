@@ -18,6 +18,9 @@ return new class extends Migration
             $table->datetime('tanggal_tugas');
             $table->datetime('deadline_tugas');
             $table->string('prioritas', 200);
+            $table->string('status_tugas', 50)->default('Belum Selesai');
+            $table->string('kategoritugas', 50); //kelompok atau individu
+            $table->foreignUlid('departemen_id')->constrained('departemens')->cascadeOnDelete();
             $table->text('catatan_revisi')->nullable();
             $table->timestamps();
         });

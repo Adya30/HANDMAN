@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('lampirans', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('tugas_id')->constrained('tugas')->cascadeOnDelete();
             $table->string('nama_file', 255)->nullable();
+            $table->string('gambar_file', 255)->nullable();
             $table->text('link_tugas')->nullable();
-            $table->string('jenis', 50);
+            $table->string('keterangan_tugas', 200)->nullable();
             $table->timestamps();
         });
     }
