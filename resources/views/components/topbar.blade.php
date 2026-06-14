@@ -7,7 +7,7 @@
         $departemenId = $user->departemen_id;
         $userId = $user->id;
 
-        
+
         if ($user->nama_role === 'manager' && $departemenId) {
             $nearingDeadlineTasks = \App\Models\Tugas::where('departemen_id', $departemenId)
                 ->where('status_tugas', '!=', 'Selesai')
@@ -31,7 +31,7 @@
                 }
             }
         } elseif ($user->nama_role === 'staff' && $departemenId) {
-            
+
             $myGrupIds = \App\Models\GrupKerja::whereHas('anggota', function ($q) use ($userId) {
                 $q->where('users.id', $userId);
             })->pluck('id');
@@ -66,12 +66,11 @@
             }
         }
 
-        
         $notifications = \App\Models\Notification::where('user_id', $userId)
             ->latest()
             ->take(10)
             ->get();
-        
+
         $unreadCount = \App\Models\Notification::where('user_id', $userId)
             ->where('is_read', false)
             ->count();
@@ -90,16 +89,16 @@
 
     <form id="navbar-search-form" action="" method="GET" class="hidden md:flex flex-1 justify-center max-w-xl mx-auto px-4 m-0">
         <div class="relative w-full flex items-center bg-white/10 border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-white/20 focus-within:border-white/40 focus-within:bg-white/15 transition-all">
-            
-            
+
+
             <span class="pl-3 pointer-events-none">
                 <i class="fa-solid fa-magnifying-glass text-blue-200"></i>
             </span>
-            
+
             <input type="text" name="search" id="navbar-search-input" value="{{ request('search') }}" placeholder="Cari..." class="w-full pl-2 pr-4 py-2 bg-transparent border-0 text-sm text-white placeholder-blue-200/60 focus:outline-none transition-all">
-            
+
             <div class="h-5 w-px bg-white/20 self-center"></div>
-            
+
             <select id="navbar-search-category" class="bg-transparent border-none text-xs font-semibold text-blue-200 focus:outline-none cursor-pointer pl-3 py-2 pr-1 h-full select-none appearance-none" style="background-color: transparent; border: none; color: #93c5fd; font-weight: 600; outline: none; appearance: none; -webkit-appearance: none; -moz-appearance: none;">
                 @if(Auth::user()->nama_role === 'admin')
                     <option class="text-gray-800" value="{{ route('admin.tugas.index') }}" {{ request()->routeIs('admin.tugas.*') ? 'selected' : '' }}>Monitor Tugas</option>
@@ -131,7 +130,7 @@
                 @endif
             </button>
 
-            
+
             <div id="notif-menu" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden origin-top-right z-50 transition-all duration-100 opacity-0 scale-95">
                 <div class="px-4 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                     <span class="text-xs font-bold text-gray-900 flex items-center gap-1.5">
@@ -155,13 +154,13 @@
                         <div class="relative group hover:bg-slate-50 transition-colors {{ !$notif->is_read ? 'bg-indigo-50/20' : '' }}">
                             <a href="{{ route('notifications.read', $notif->id) }}" class="block p-4 pr-10">
                                 <div class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center 
+                                    <div class="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center
                                         @if($notif->type === 'laporan_masuk') bg-amber-50 text-amber-600
                                         @elseif($notif->type === 'tugas_dikumpulkan') bg-blue-50 text-blue-600
                                         @elseif($notif->type === 'revisi_tugas') bg-rose-50 text-rose-600
                                         @elseif($notif->type === 'tugas_baru') bg-green-50 text-green-700
                                         @else bg-indigo-50 text-[#3B28CC] @endif">
-                                        <i class="fa-solid 
+                                        <i class="fa-solid
                                             @if($notif->type === 'laporan_masuk') fa-circle-exclamation
                                             @elseif($notif->type === 'tugas_dikumpulkan') fa-file-arrow-up
                                             @elseif($notif->type === 'revisi_tugas') fa-rotate-left
@@ -249,16 +248,16 @@
     function deleteNotification(event, id, url, csrfToken, buttonEl) {
         event.stopPropagation();
         event.preventDefault();
-        
+
         const itemEl = buttonEl.closest('.relative.group');
         if (!itemEl) return;
-        
+
         itemEl.style.transition = 'all 0.25s ease';
         itemEl.style.opacity = '0';
         itemEl.style.transform = 'scale(0.95)';
-        
+
         const isUnread = itemEl.querySelector('.bg-red-500') !== null;
-        
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -275,7 +274,7 @@
             if (response.ok) {
                 setTimeout(() => {
                     itemEl.remove();
-                    
+
                     const remaining = document.querySelectorAll('#notif-menu .relative.group');
                     if (remaining.length === 0) {
                         const listContainer = document.querySelector('#notif-menu .divide-y');
@@ -288,11 +287,11 @@
                             `;
                         }
                     }
-                    
+
                     if (isUnread) {
                         const badge = document.getElementById('notif-badge');
                         const headerBadge = document.getElementById('notif-header-badge');
-                        
+
                         if (badge) {
                             let count = parseInt(badge.textContent.trim(), 10) - 1;
                             if (count <= 0) {
@@ -301,7 +300,7 @@
                                 badge.textContent = count;
                             }
                         }
-                        
+
                         if (headerBadge) {
                             let count = parseInt(headerBadge.textContent.trim(), 10) - 1;
                             if (count <= 0) {

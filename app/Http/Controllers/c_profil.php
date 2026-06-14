@@ -82,7 +82,7 @@ class c_profil extends Controller
                 return response()->json([
                     'valid' => false,
                     'errors' => $validator->errors(),
-                ], 200);
+                ], 1000);
             }
 
             return response()->json(['valid' => true], 200);

@@ -23,7 +23,7 @@ class c_kelolaJadwal extends Controller
 
         if ($userRole === 'staff') {
             $userId = auth()->id();
-            
+
             $myGrupIds = \App\Models\GrupKerja::whereHas('anggota', function ($q) use ($userId) {
                 $q->where('users.id', $userId);
             })->pluck('id');
@@ -39,13 +39,12 @@ class c_kelolaJadwal extends Controller
                 })
                 ->get();
         } else {
-            
+
             $tasks = Tugas::where('departemen_id', $departemenId)
                 ->whereBetween('deadline_tugas', [$startOfMonth . ' 00:00:00', $endOfMonth . ' 23:59:59'])
                 ->get();
         }
 
-        
         $notes = CatatanJadwal::where('user_id', auth()->id())
             ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
             ->with('tugas')
@@ -103,7 +102,7 @@ class c_kelolaJadwal extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        
+
         if ($note->tugas_id) {
             $note->load('tugas');
         }

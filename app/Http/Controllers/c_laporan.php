@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class c_laporan extends Controller
 {
-    
-
-
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -52,9 +49,6 @@ class c_laporan extends Controller
         $view = $role === 'manager' ? 'manager.laporan.index' : 'staff.laporan.index';
         return view($view, compact('laporans'));
     }
-
-    
-
 
     public function store(Request $request)
     {

@@ -8,16 +8,10 @@ use Illuminate\Http\Request;
 
 class c_grupKerja extends Controller
 {
-    
-
-
     public function index()
     {
         return redirect()->route('staff-divisi.index', ['tab' => 'grup-kerja']);
     }
-
-    
-
 
     public function store(Request $request)
     {
@@ -55,7 +49,7 @@ class c_grupKerja extends Controller
 
         $memberCount = 0;
         if ($request->filled('anggota_ids')) {
-            
+
             $validAnggota = User::where('departemen_id', $departemenId)
                 ->where('nama_role', 'staff')
                 ->whereIn('id', $request->anggota_ids)
@@ -73,16 +67,10 @@ class c_grupKerja extends Controller
             ->with('success', $msg);
     }
 
-    
-
-
     public function show(string $id)
     {
         return redirect()->route('staff-divisi.index', ['tab' => 'grup-kerja']);
     }
-
-    
-
 
     public function destroy(string $id)
     {
@@ -91,7 +79,7 @@ class c_grupKerja extends Controller
         $grup = GrupKerja::where('departemen_id', $departemenId)->findOrFail($id);
 
         $namaGrup = $grup->nama_grup;
-        $grup->anggota()->detach(); 
+        $grup->anggota()->detach();
         $grup->delete();
 
         return redirect()->route('staff-divisi.index', ['tab' => 'grup-kerja'])

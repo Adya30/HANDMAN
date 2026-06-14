@@ -5,7 +5,6 @@
 @section('content')
 <div class="space-y-6 pb-10">
 
-    
     <div class="flex items-center justify-between gap-4 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Laporan Masalah</h1>
@@ -17,7 +16,6 @@
         </button>
     </div>
 
-    
     @if(session('success'))
         <div class="p-4 text-sm text-green-800 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3">
             <i class="fa-solid fa-circle-check text-green-600 text-base shrink-0"></i>
@@ -38,7 +36,7 @@
         </div>
     @endif
 
-    
+
     @if($laporans->isEmpty())
         <div class="bg-white border border-gray-100 rounded-2xl p-14 text-center shadow-sm">
             <div class="flex flex-col items-center gap-3">
@@ -54,7 +52,7 @@
             @foreach($laporans as $laporan)
             <div class="bg-white border border-gray-100 rounded-2xl shadow-xs overflow-hidden hover:shadow-md transition-shadow">
                 <div class="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    
+
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2">
                             <p class="text-xs text-gray-400">Dikirim {{ \Carbon\Carbon::parse($laporan->created_at)->translatedFormat('d M Y, H:i') }}</p>
@@ -77,7 +75,7 @@
                                         : 'bg-green-500') }}"></span>
                             {{ $laporan->status === 'Menunggu' ? 'Belum Dibalas' : $laporan->status }}
                         </span>
-                        
+
                         <a href="{{ route('laporan.show', $laporan->id) }}"
                            class="bg-white border border-gray-200 text-gray-700 hover:text-[#3B28CC] hover:bg-indigo-50/50 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
@@ -95,10 +93,10 @@
 
 
 <div id="modal-lapor" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
-    
+
     <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-xs" onclick="closeLaporModal()"></div>
 
-    
+
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 overflow-hidden">
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">

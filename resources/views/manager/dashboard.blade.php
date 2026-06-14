@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6 pb-10">
 
-    
+
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Dashboard Utama</h1>
@@ -14,10 +14,8 @@
         <span class="text-xs text-gray-400 font-medium">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
     </div>
 
-    
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
 
-        
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Staff</span>
@@ -29,7 +27,7 @@
             </div>
         </div>
 
-        
+
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tugas Selesai</span>
@@ -41,7 +39,7 @@
             </div>
         </div>
 
-        
+
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tugas Berjalan</span>
@@ -55,7 +53,7 @@
             </div>
         </div>
 
-        
+
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Efisiensi Kerja</span>
@@ -71,7 +69,7 @@
         </div>
     </div>
 
-    
+
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div class="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center text-violet-600 shrink-0">
@@ -104,7 +102,7 @@
         </div>
     </div>
 
-    
+
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>

@@ -4,8 +4,6 @@
 
 @section('content')
 <div class="space-y-6 pb-10">
-
-    
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Dashboard Utama</h1>
@@ -14,12 +12,9 @@
         <span class="text-xs text-gray-400 font-medium">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
     </div>
 
-    
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
 
-        
-        <a href="{{ route('staff.tugas.index') }}"
-           class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Tugas Saya</span>
                 <h3 class="text-2xl font-bold text-gray-800">{{ $totalTugas }}</h3>
@@ -28,11 +23,9 @@
             <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-[#3B28CC] group-hover:bg-indigo-100 transition-colors">
                 <i class="fa-solid fa-list-check text-xl"></i>
             </div>
-        </a>
+        </div>
 
-        
-        <a href="{{ route('staff.tugas.index', ['status' => 'Selesai']) }}"
-           class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tugas Selesai</span>
                 <h3 class="text-2xl font-bold text-green-600">{{ $tugasSelesai }}</h3>
@@ -41,11 +34,9 @@
             <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
                 <i class="fa-solid fa-circle-check text-xl"></i>
             </div>
-        </a>
+        </div>
 
-        
-        <a href="{{ route('staff.tugas.index') }}"
-           class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group">
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tugas Berjalan</span>
                 <h3 class="text-2xl font-bold text-amber-600">{{ $tugasBerjalan }}</h3>
@@ -56,9 +47,8 @@
             <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 group-hover:bg-amber-100 transition-colors">
                 <i class="fa-solid fa-clock text-xl"></i>
             </div>
-        </a>
+        </div>
 
-        
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Efisiensi Kerja</span>
@@ -74,7 +64,7 @@
         </div>
     </div>
 
-    
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div class="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center text-violet-600 shrink-0">
@@ -86,7 +76,7 @@
             </div>
         </div>
 
-        <a href="{{ route('staff.laporan.index') }}" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3 hover:bg-gray-50/50 transition">
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-rose-600 shrink-0">
                 <i class="fa-solid fa-circle-exclamation text-base"></i>
             </div>
@@ -94,7 +84,7 @@
                 <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Laporan Saya</p>
                 <p class="text-xl font-bold text-gray-800">{{ $totalLaporanSaya }}</p>
             </div>
-        </a>
+        </div>
 
         <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div class="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600 shrink-0">
@@ -106,7 +96,7 @@
             </div>
         </div>
 
-        <a href="{{ route('staff.tugas.index', ['status' => 'Revisi']) }}" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3 hover:bg-gray-50/50 transition">
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
                 <i class="fa-solid fa-arrow-rotate-left text-base"></i>
             </div>
@@ -114,13 +104,13 @@
                 <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wider">Tugas Revisi</p>
                 <p class="text-xl font-bold text-gray-800">{{ $tugasRevisi }}</p>
             </div>
-        </a>
+        </div>
     </div>
 
-    
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        
+
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div>
@@ -152,7 +142,7 @@
             </div>
         </div>
 
-        
+
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div>

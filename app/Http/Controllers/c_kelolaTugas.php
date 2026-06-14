@@ -193,7 +193,9 @@ class c_kelolaTugas extends Controller
                 null,
                 $tugas->id
             ));
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
+
         }
 
         return redirect()->route('tugas.index')->with('success', 'Tugas berhasil dibuat.');
@@ -565,7 +567,7 @@ class c_kelolaTugas extends Controller
         $tugasMenunggu   = $tugasList->where('status_tugas', 'Menunggu Persetujuan')->count();
 
         $currentEfficiency = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 0;
-        
+
         $cutoffDate = now()->subDays(14);
         $pastTugas = $tugasList->filter(function($t) use ($cutoffDate) {
             return \Carbon\Carbon::parse($t->tanggal_tugas)->lt($cutoffDate);

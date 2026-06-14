@@ -71,8 +71,8 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
+        <div class="grid grid-cols-1 gap-4">
+
             <div class="space-y-1.5 text-left" id="assignee_staff_container">
                 <label class="text-sm font-semibold text-gray-700">Pilih Staff Penanggung Jawab</label>
                 <select name="user_id" id="user_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
@@ -84,7 +84,7 @@
                 <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-user_id"></p>
             </div>
 
-            
+
             <div class="space-y-1.5 text-left hidden" id="assignee_grup_container">
                 <label class="text-sm font-semibold text-gray-700">Pilih Grup Kerja Penanggung Jawab</label>
                 <select name="grup_kerja_id" id="grup_kerja_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">

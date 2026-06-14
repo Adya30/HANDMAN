@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class c_notification extends Controller
 {
-    
+
     public function read(string $id)
     {
         $notification = Notification::where('user_id', Auth::id())->findOrFail($id);
@@ -17,17 +17,16 @@ class c_notification extends Controller
             $notification->update(['is_read' => true]);
         }
 
-        
         switch ($notification->type) {
             case 'laporan_masuk':
                 return redirect()->route('admin.laporan.index');
-            
+
             case 'tugas_dikumpulkan':
                 return redirect()->route('tugas.show', $notification->related_id);
-            
+
             case 'revisi_tugas':
                 return redirect()->route('staff.tugas.show', $notification->related_id);
-            
+
             case 'tugas_baru':
             case 'tugas_selesai':
                 if (Auth::user()->nama_role === 'manager') {
@@ -46,7 +45,7 @@ class c_notification extends Controller
         }
     }
 
-    
+
 
 
     public function readAll()

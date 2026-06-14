@@ -5,7 +5,7 @@
                 <div class="flex items-center space-x-3 overflow-hidden">
                     <img src="{{ asset('assets/logo.png') }}" class="w-10 h-10 rounded-full object-cover bg-white border-2 border-white/20">
                     <div class="truncate">
-                        <h2 class="text-sm font-bold text-white truncate">Nama Perusahaan</h2>
+                        <h2 class="text-sm font-bold text-white truncate">PT Rolas Nusantara Medika Jember</h2>
                         <p class="text-xs text-blue-200 font-medium capitalize">{{ Auth::user()->nama_role }}</p>
                     </div>
                 </div>
