@@ -29,6 +29,7 @@ class c_grupKerja extends Controller
         ], [
             'nama_grup.required'    => 'Nama grup wajib diisi.',
             'nama_grup.max'         => 'Nama grup maksimal 200 karakter.',
+            'anggota_ids.*.exists'  => 'Salah satu anggota yang dipilih tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {

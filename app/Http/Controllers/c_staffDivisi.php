@@ -101,6 +101,9 @@ class c_staffDivisi extends Controller
 
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'grup_kerja_id' => 'required|exists:grup_kerjas,id',
+        ], [
+            'grup_kerja_id.required' => 'Grup kerja wajib dipilih.',
+            'grup_kerja_id.exists' => 'Grup kerja yang dipilih tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
@@ -137,6 +140,9 @@ class c_staffDivisi extends Controller
 
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'grup_kerja_id' => 'required|exists:grup_kerjas,id',
+        ], [
+            'grup_kerja_id.required' => 'Grup kerja wajib dipilih.',
+            'grup_kerja_id.exists' => 'Grup kerja yang dipilih tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {

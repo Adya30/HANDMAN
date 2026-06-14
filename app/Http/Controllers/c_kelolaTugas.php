@@ -92,8 +92,27 @@ class c_kelolaTugas extends Controller
             'nama_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt|max:20480',
             'link_tugas' => 'nullable|url',
         ], [
+            'nama_tugas.required' => 'Nama tugas wajib diisi.',
+            'nama_tugas.max' => 'Nama tugas maksimal 255 karakter.',
+            'deskripsi.required' => 'Deskripsi tugas wajib diisi.',
+            'tanggal_tugas.required' => 'Tanggal tugas wajib diisi.',
+            'tanggal_tugas.date' => 'Format tanggal tugas tidak valid.',
+            'deadline_tugas.required' => 'Deadline tugas wajib diisi.',
+            'deadline_tugas.date' => 'Format deadline tugas tidak valid.',
+            'deadline_tugas.after_or_equal' => 'Deadline tugas harus setelah atau sama dengan tanggal tugas.',
+            'prioritas.required' => 'Prioritas tugas wajib dipilih.',
+            'prioritas.max' => 'Prioritas tugas maksimal 200 karakter.',
+            'kategoritugas.required' => 'Kategori tugas wajib dipilih.',
+            'kategoritugas.max' => 'Kategori tugas maksimal 50 karakter.',
             'user_id.required_if' => 'Staff penanggung jawab wajib dipilih jika kategori tugas adalah Individu.',
             'grup_kerja_id.required_if' => 'Grup kerja penanggung jawab wajib dipilih jika kategori tugas adalah Kelompok.',
+            'gambar_file.image' => 'File harus berupa gambar.',
+            'gambar_file.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'gambar_file.max' => 'Ukuran gambar maksimal 10MB.',
+            'nama_file.file' => 'File harus berupa dokumen.',
+            'nama_file.mimes' => 'Format dokumen harus pdf, doc, docx, xls, xlsx, ppt, pptx, atau txt.',
+            'nama_file.max' => 'Ukuran dokumen maksimal 20MB.',
+            'link_tugas.url' => 'Format link tugas tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
@@ -238,8 +257,23 @@ class c_kelolaTugas extends Controller
             'grup_kerja_id' => 'required_if:kategoritugas,Kelompok|nullable|exists:grup_kerjas,id',
             'catatan_revisi' => 'nullable|string',
         ], [
+            'nama_tugas.required' => 'Nama tugas wajib diisi.',
+            'nama_tugas.max' => 'Nama tugas maksimal 255 karakter.',
+            'deskripsi.required' => 'Deskripsi tugas wajib diisi.',
+            'tanggal_tugas.required' => 'Tanggal tugas wajib diisi.',
+            'tanggal_tugas.date' => 'Format tanggal tugas tidak valid.',
+            'deadline_tugas.required' => 'Deadline tugas wajib diisi.',
+            'deadline_tugas.date' => 'Format deadline tugas tidak valid.',
+            'deadline_tugas.after_or_equal' => 'Deadline tugas harus setelah atau sama dengan tanggal tugas.',
+            'prioritas.required' => 'Prioritas tugas wajib dipilih.',
+            'prioritas.max' => 'Prioritas tugas maksimal 200 karakter.',
+            'status_tugas.required' => 'Status tugas wajib dipilih.',
+            'status_tugas.max' => 'Status tugas maksimal 50 karakter.',
+            'kategoritugas.required' => 'Kategori tugas wajib dipilih.',
+            'kategoritugas.max' => 'Kategori tugas maksimal 50 karakter.',
             'user_id.required_if' => 'Staff penanggung jawab wajib dipilih jika kategori tugas adalah Individu.',
             'grup_kerja_id.required_if' => 'Grup kerja penanggung jawab wajib dipilih jika kategori tugas adalah Kelompok.',
+            'catatan_revisi.string' => 'Catatan revisi harus berupa teks.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
@@ -298,6 +332,10 @@ class c_kelolaTugas extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'action' => 'required|in:setujui,revisi',
             'catatan_revisi' => 'required_if:action,revisi|nullable|string',
+        ], [
+            'action.required' => 'Aksi wajib dipilih.',
+            'action.in' => 'Aksi yang dipilih tidak valid.',
+            'catatan_revisi.required_if' => 'Catatan revisi wajib diisi jika tugas dikembalikan untuk revisi.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
@@ -431,6 +469,14 @@ class c_kelolaTugas extends Controller
             'gambar_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'nama_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt|max:20480',
             'link_tugas' => 'nullable|url',
+        ], [
+            'gambar_file.image' => 'File harus berupa gambar.',
+            'gambar_file.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'gambar_file.max' => 'Ukuran gambar maksimal 10MB.',
+            'nama_file.file' => 'File harus berupa dokumen.',
+            'nama_file.mimes' => 'Format dokumen harus pdf, doc, docx, xls, xlsx, ppt, pptx, atau txt.',
+            'nama_file.max' => 'Ukuran dokumen maksimal 20MB.',
+            'link_tugas.url' => 'Format link tugas tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {

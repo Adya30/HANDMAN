@@ -71,6 +71,12 @@ class c_kelolaJadwal extends Controller
             'tanggal' => 'required|date',
             'catatan' => 'required|string',
             'tugas_id' => 'nullable|exists:tugas,id',
+        ], [
+            'tanggal.required' => 'Tanggal wajib diisi.',
+            'tanggal.date' => 'Format tanggal tidak valid.',
+            'catatan.required' => 'Catatan wajib diisi.',
+            'catatan.string' => 'Catatan harus berupa teks.',
+            'tugas_id.exists' => 'Tugas yang dipilih tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
@@ -116,6 +122,10 @@ class c_kelolaJadwal extends Controller
         $validator = Validator::make($request->all(), [
             'catatan' => 'required|string',
             'tugas_id' => 'nullable|exists:tugas,id',
+        ], [
+            'catatan.required' => 'Catatan wajib diisi.',
+            'catatan.string' => 'Catatan harus berupa teks.',
+            'tugas_id.exists' => 'Tugas yang dipilih tidak valid.',
         ]);
 
         if ($request->hasHeader('X-Validate-Only')) {
