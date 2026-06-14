@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6 pb-10">
 
-    
+
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Monitor Tugas</h1>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
             <div class="space-y-1">
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    
+
     <form method="GET" action="{{ route('admin.tugas.index') }}" id="filter-form">
         <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <div class="flex flex-col sm:flex-row gap-3 items-end">
@@ -92,7 +92,7 @@
         </div>
     </form>
 
-    
+
     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -110,7 +110,7 @@
                     @forelse($tugas as $t)
                     <tr class="hover:bg-gray-50/80 transition-colors">
                         <td class="p-4">
-                            <p class="font-semibold text-gray-900 max-w-[220px] truncate" title="{{ $t->nama_tugas }}">{{ $t->nama_tugas }}</p>
+                            <p class="font-semibold text-gray-900 max-w-55 truncate" title="{{ $t->nama_tugas }}">{{ $t->nama_tugas }}</p>
                             <p class="text-[10px] text-gray-400 mt-0.5">Dibuat: {{ \Carbon\Carbon::parse($t->created_at)->format('d M Y') }}</p>
                         </td>
                         <td class="p-4">
@@ -175,7 +175,7 @@
             </table>
         </div>
 
-        
+
         @if($tugas->count() > 0)
         <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
             <p class="text-xs text-gray-500">

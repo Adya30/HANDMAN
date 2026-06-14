@@ -149,7 +149,7 @@
                     @endif
                 </div>
 
-                <div class="max-h-[320px] overflow-y-auto divide-y divide-gray-50">
+                <div class="max-h-80 overflow-y-auto divide-y divide-gray-50">
                     @forelse($notifications as $notif)
                         <div class="relative group hover:bg-slate-50 transition-colors {{ !$notif->is_read ? 'bg-indigo-50/20' : '' }}">
                             <a href="{{ route('notifications.read', $notif->id) }}" class="block p-4 pr-10">
@@ -179,7 +179,7 @@
                                     @endif
                                 </div>
                             </a>
-                            <button type="button" onclick="deleteNotification(event, '{{ $notif->id }}', '{{ route('notifications.destroy', $notif->id) }}', '{{ csrf_token() }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 sm:opacity-0 sm:group-hover:opacity-100 hover:!opacity-100 transition-opacity z-10 w-6 h-6 bg-gray-50 hover:bg-rose-50 hover:text-rose-600 rounded-lg flex items-center justify-center text-[11px] text-gray-400 cursor-pointer shadow-xs border border-gray-200/50 transition-colors" title="Hapus Notifikasi">
+                            <button type="button" onclick="deleteNotification(event, '{{ $notif->id }}', '{{ route('notifications.destroy', $notif->id) }}', '{{ csrf_token() }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 sm:opacity-0 sm:group-hover:opacity-100 hover:opacity-100 transition-color z-10 w-6 h-6 bg-gray-50 hover:bg-rose-50 hover:text-rose-600 rounded-lg flex items-center justify-center text-[11px] text-gray-400 cursor-pointer shadow-xs border border-gray-200/50 transition-colors" title="Hapus Notifikasi">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>
