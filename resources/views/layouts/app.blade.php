@@ -24,7 +24,7 @@
             <div id="app-body-container" class="flex-1 flex flex-col min-w-0">
                 @include('components.topbar')
 
-                <main class="flex-1 px-4 sm:px-6 mt-4 overflow-x-hidden md:ml-64">
+                <main class="flex-1 px-4 pb-4 sm:px-6 mt-4 overflow-x-hidden md:ml-64">
                     @yield('content')
                 </main>
             </div>
@@ -34,6 +34,5 @@
     @guest
         @yield('content')
     @endguest
-
 </body>
 </html>
