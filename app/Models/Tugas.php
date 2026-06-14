@@ -33,6 +33,11 @@ class Tugas extends Model
         return $this->belongsTo(Departemen::class, 'departemen_id');
     }
 
+    public function detailTugas(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(DetailTugas::class, 'tugas_id');
+    }
+
     public function lampirans(): HasMany
     {
         return $this->hasMany(Lampiran::class, 'tugas_id');

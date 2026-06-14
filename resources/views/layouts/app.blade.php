@@ -6,7 +6,14 @@
     <title>@yield('title', 'Handman - Sistem Management Tugas Kantor')</title>
     <link rel="shortcut icon" href="{{ asset('assets/logo.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta name="user-id" content="{{ auth()->id() }}">
+    <meta name="user-role" content="{{ auth()->user() ? auth()->user()->nama_role : '' }}">
+    <meta name="user-departemen-id" content="{{ auth()->user() ? auth()->user()->departemen_id : '' }}">
+    <meta name="reverb-key" content="{{ env('REVERB_APP_KEY') }}">
+    <meta name="reverb-host" content="{{ env('REVERB_HOST', '127.0.0.1') }}">
+    <meta name="reverb-port" content="{{ env('REVERB_PORT', '8080') }}">
+    <meta name="reverb-scheme" content="{{ env('REVERB_SCHEME', 'http') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/reverb.js'])
 </head>
 <body class="bg-gray-50 min-h-screen font-sans antialiased" x-data="{ sidebarOpen: false }">
 
@@ -14,7 +21,7 @@
         <div class="flex min-h-screen bg-gray-50">
             @include('components.sidebar')
 
-            <div class="flex-1 flex flex-col min-w-0">
+            <div id="app-body-container" class="flex-1 flex flex-col min-w-0">
                 @include('components.topbar')
 
                 <main class="flex-1 px-4 sm:px-6 mt-4 overflow-x-hidden md:ml-64">

@@ -1,16 +1,30 @@
-function openJadwalModal(dateString, formattedDate) {
-    document.getElementById('modal-date-title').innerText = `Detail Jadwal - ${formattedDate}`;
-    document.getElementById('note-date').value = dateString;
-    resetNoteForm();
+function selectJadwalDate(dateString, formattedDate) {
+    // Highlight active cell
+    document.querySelectorAll('[id^="cell-"]').forEach(c => {
+        c.classList.remove('ring-2', 'ring-[#3B28CC]', 'bg-slate-50/80');
+    });
     const cell = document.getElementById(`cell-${dateString}`);
-    if (!cell) return;
+    if (cell) {
+        cell.classList.add('ring-2', 'ring-[#3B28CC]', 'bg-slate-50/80');
+    }
+
+    // Set form date and labels
+    document.getElementById('note-date').value = dateString;
+    document.getElementById('detail-note-date-label').innerText = formattedDate;
+    resetNoteForm();
+
     const tasks = JSON.parse(cell.getAttribute('data-tasks') || '[]');
     const notes = JSON.parse(cell.getAttribute('data-notes') || '[]');
+
+    // Render tasks
     let tasksHtml = '';
     tasks.forEach(t => {
         const badgeClass = t.prioritas === 'Tinggi'
             ? 'bg-red-50 text-red-700 border-red-100'
             : (t.prioritas === 'Sedang' ? 'bg-orange-50 text-orange-700 border-orange-100' : 'bg-green-50 text-green-700 border-green-100');
+
+        const isStaff = window.location.pathname.startsWith('/staff');
+        const detailUrl = isStaff ? `/staff/tugas/${t.id}` : `/tugas/${t.id}`;
 
         tasksHtml += `
             <div class="p-3 border border-gray-100 rounded-xl bg-gray-50/50 hover:bg-gray-50 transition-all flex items-center justify-between gap-3">
@@ -19,19 +33,18 @@ function openJadwalModal(dateString, formattedDate) {
                     <h5 class="text-xs font-bold text-gray-800 mt-1 truncate" title="${t.nama_tugas}">${t.nama_tugas}</h5>
                     <p class="text-[10px] text-gray-400 mt-0.5">Deadline: ${formatDateTime(t.deadline_tugas)}</p>
                 </div>
-                <a href="/tugas/${t.id}" class="px-2.5 py-1 text-[10px] font-bold text-[#3B28CC] border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 rounded-lg transition-all whitespace-nowrap">Detail</a>
+                <a href="${detailUrl}" class="px-2.5 py-1 text-[10px] font-bold text-[#3B28CC] border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 rounded-lg transition-all whitespace-nowrap">Detail</a>
             </div>
         `;
     });
     if (tasks.length === 0) {
         tasksHtml = `<p class="text-xs text-gray-400 italic text-center py-6">Tidak ada tugas berjalan pada tanggal ini.</p>`;
     }
-    document.getElementById('modal-tasks-list').innerHTML = tasksHtml;
-    document.getElementById('modal-tasks-count').innerText = tasks.length;
+    document.getElementById('detail-tasks-list').innerHTML = tasksHtml;
+    document.getElementById('detail-tasks-count').innerText = tasks.length;
+
+    // Render notes
     renderNotesList(notes);
-    const modal = document.getElementById('jadwal-modal');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
 }
 
 function renderNotesList(notes) {
@@ -46,10 +59,10 @@ function renderNotesList(notes) {
                 <div class="flex items-start justify-between gap-3">
                     <p class="text-xs text-gray-700 whitespace-pre-line break-words leading-relaxed flex-1 min-w-0">${escapeHtml(n.catatan)}</p>
                     <div class="flex items-center gap-1 shrink-0">
-                        <button type="button" onclick="editNote('${n.id}', \`${escapeJs(n.catatan)}\`)" class="p-1.5 text-gray-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition-colors" title="Edit">
+                        <button type="button" data-id="${n.id}" data-catatan="${escapeHtml(n.catatan)}" class="edit-note-btn p-1.5 text-gray-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition-colors" title="Edit">
                             <i class="fa-solid fa-pen text-[10px]"></i>
                         </button>
-                        <button type="button" onclick="deleteNote('${n.id}')" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Hapus">
+                        <button type="button" data-id="${n.id}" class="delete-note-btn p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Hapus">
                             <i class="fa-solid fa-trash-can text-[10px]"></i>
                         </button>
                     </div>
@@ -61,13 +74,7 @@ function renderNotesList(notes) {
     if (notes.length === 0) {
         notesHtml = `<p class="text-xs text-gray-400 italic text-center py-6">Belum ada catatan.</p>`;
     }
-    document.getElementById('modal-notes-list').innerHTML = notesHtml;
-}
-
-function closeJadwalModal() {
-    const modal = document.getElementById('jadwal-modal');
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';
+    document.getElementById('detail-notes-list').innerHTML = notesHtml;
 }
 
 function editNote(id, catatan) {
@@ -139,7 +146,6 @@ function submitNoteForm(event) {
 }
 
 function deleteNote(id) {
-    if (!confirm('Apakah Anda yakin ingin menghapus catatan ini?')) return;
     const tanggal = document.getElementById('note-date').value;
     const token = document.querySelector('input[name="_token"]').value;
     fetch(`/jadwal/notes/${id}`, {
@@ -205,14 +211,40 @@ function escapeHtml(text) {
         .replace(/'/g, "&#039;");
 }
 
-function escapeJs(text) {
-    if (!text) return '';
-    return text.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
-}
+document.addEventListener('click', (e) => {
+    // Edit button
+    const editBtn = e.target.closest('.edit-note-btn');
+    if (editBtn) {
+        const id = editBtn.getAttribute('data-id');
+        const catatan = editBtn.getAttribute('data-catatan');
+        editNote(id, catatan);
+        return;
+    }
 
-window.openJadwalModal = openJadwalModal;
+    // Delete button
+    const deleteBtn = e.target.closest('.delete-note-btn');
+    if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        deleteNote(id);
+        return;
+    }
+});
+
+// Auto select today or first day of month on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const todayCell = document.querySelector('[data-is-today="true"]');
+    if (todayCell) {
+        todayCell.click();
+    } else {
+        const firstCell = document.querySelector('.current-month-cell');
+        if (firstCell) {
+            firstCell.click();
+        }
+    }
+});
+
+window.selectJadwalDate = selectJadwalDate;
 window.renderNotesList = renderNotesList;
-window.closeJadwalModal = closeJadwalModal;
 window.editNote = editNote;
 window.resetNoteForm = resetNoteForm;
 window.submitNoteForm = submitNoteForm;

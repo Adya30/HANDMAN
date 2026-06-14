@@ -25,6 +25,18 @@
                     <i class="fa-solid fa-users w-5 text-center mr-3 {{ request()->routeIs('kelola-akun.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
                     Kelola Pengguna
                 </a>
+
+                <a href="{{ route('admin.tugas.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.tugas.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-solid fa-chart-gantt w-5 text-center mr-3 {{ request()->routeIs('admin.tugas.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Monitor Tugas
+                </a>
+
+                <a href="{{ route('admin.laporan.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.laporan.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-solid fa-receipt w-5 text-center mr-3 {{ request()->routeIs('admin.laporan.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Laporan Masuk
+                </a>
             @endif
 
             @if(Auth::user()->nama_role === 'manager')
@@ -46,10 +58,16 @@
                     Kelola Jadwal
                 </a>
 
-                <a href="#"
+                <a href="{{ route('staff-divisi.index') }}"
                    class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('staff-divisi.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     <i class="fa-solid fa-users-gear w-5 text-center mr-3 {{ request()->routeIs('staff-divisi.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
                     Staff Divisi
+                </a>
+
+                <a href="{{ route('manager.laporan.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('manager.laporan.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-solid fa-circle-exclamation w-5 text-center mr-3 {{ request()->routeIs('manager.laporan.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Laporan Masalah
                 </a>
             @endif
 
@@ -60,10 +78,22 @@
                     Staff Dashboard
                 </a>
 
-                <a href="#"
-                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('tugas-saya.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                    <i class="fa-regular fa-square-check w-5 text-center mr-3 {{ request()->routeIs('tugas-saya.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                <a href="{{ route('staff.tugas.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('staff.tugas.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-regular fa-square-check w-5 text-center mr-3 {{ request()->routeIs('staff.tugas.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
                     Tugas Saya
+                </a>
+
+                <a href="{{ route('staff.jadwal.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('staff.jadwal.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-regular fa-calendar w-5 text-center mr-3 {{ request()->routeIs('staff.jadwal.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Jadwal Kerja
+                </a>
+
+                <a href="{{ route('staff.laporan.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('staff.laporan.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-solid fa-circle-exclamation w-5 text-center mr-3 {{ request()->routeIs('staff.laporan.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Laporan Masalah
                 </a>
             @endif
         </nav>

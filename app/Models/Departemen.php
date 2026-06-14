@@ -24,4 +24,10 @@ class Departemen extends Model
     {
         return $this->hasMany(User::class, 'departemen_id', 'id');
     }
+
+    public function tugas(): HasMany
+    {
+        return $this->hasMany(\App\Models\Tugas::class, 'departemen_id', 'id');
+    }
 }
+

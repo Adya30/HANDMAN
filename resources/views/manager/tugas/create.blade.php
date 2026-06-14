@@ -61,11 +61,37 @@
 
             <div class="space-y-1.5">
                 <label class="text-sm font-semibold text-gray-700">Kategori Tugas</label>
-                <select name="kategoritugas" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]" required>
+                <select name="kategoritugas" id="kategoritugas" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]" required>
                     <option value="Individu" {{ old('kategoritugas') == 'Individu' ? 'selected' : '' }}>Individu</option>
                     <option value="Kelompok" {{ old('kategoritugas') == 'Kelompok' ? 'selected' : '' }}>Kelompok</option>
                 </select>
                 @error('kategoritugas') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="space-y-1.5 text-left" id="assignee_staff_container">
+                <label class="text-sm font-semibold text-gray-700">Pilih Staff Penanggung Jawab</label>
+                <select name="user_id" id="user_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
+                    <option value="">-- Pilih Staff --</option>
+                    @foreach($staffs as $staff)
+                        <option value="{{ $staff->id }}" {{ old('user_id') == $staff->id ? 'selected' : '' }}>{{ $staff->nama_lengkap }}</option>
+                    @endforeach
+                </select>
+                @error('user_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            
+            <div class="space-y-1.5 text-left hidden" id="assignee_grup_container">
+                <label class="text-sm font-semibold text-gray-700">Pilih Grup Kerja Penanggung Jawab</label>
+                <select name="grup_kerja_id" id="grup_kerja_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
+                    <option value="">-- Pilih Grup Kerja --</option>
+                    @foreach($grups as $grup)
+                        <option value="{{ $grup->id }}" {{ old('grup_kerja_id') == $grup->id ? 'selected' : '' }}>{{ $grup->nama_grup }} ({{ $grup->anggota->count() }} Anggota)</option>
+                    @endforeach
+                </select>
+                @error('grup_kerja_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
         </div>
 
@@ -252,5 +278,44 @@
         dokumenValid = true;
         validasiForm();
     });
+
+    // Toggle assignee fields based on kategoritugas
+    const kategoritugasSelect = document.getElementById('kategoritugas');
+    const staffContainer = document.getElementById('assignee_staff_container');
+    const grupContainer = document.getElementById('assignee_grup_container');
+    const staffSelect = document.getElementById('user_id');
+    const grupSelect = document.getElementById('grup_kerja_id');
+
+    function toggleAssigneeFields() {
+        if (kategoritugasSelect.value === 'Individu') {
+            staffContainer.classList.remove('hidden');
+            grupContainer.classList.add('hidden');
+            staffSelect.disabled = false;
+            staffSelect.required = true;
+            grupSelect.disabled = true;
+            grupSelect.required = false;
+            grupSelect.value = '';
+        } else if (kategoritugasSelect.value === 'Kelompok') {
+            staffContainer.classList.add('hidden');
+            grupContainer.classList.remove('hidden');
+            staffSelect.disabled = true;
+            staffSelect.required = false;
+            staffSelect.value = '';
+            grupSelect.disabled = false;
+            grupSelect.required = true;
+        } else {
+            staffContainer.classList.add('hidden');
+            grupContainer.classList.add('hidden');
+            staffSelect.disabled = true;
+            staffSelect.required = false;
+            grupSelect.disabled = true;
+            grupSelect.required = false;
+        }
+    }
+
+    if (kategoritugasSelect) {
+        kategoritugasSelect.addEventListener('change', toggleAssigneeFields);
+        toggleAssigneeFields();
+    }
 </script>
 @endsection

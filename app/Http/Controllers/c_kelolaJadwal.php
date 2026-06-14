@@ -19,13 +19,33 @@ class c_kelolaJadwal extends Controller
         $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth()->toDateString();
 
         $departemenId = auth()->user()->departemen_id;
+        $userRole = auth()->user()->nama_role;
 
-        // Ambil semua tugas di departemen manager yang memiliki deadline pada bulan terpilih
-        $tasks = Tugas::where('departemen_id', $departemenId)
-            ->whereBetween('deadline_tugas', [$startOfMonth . ' 00:00:00', $endOfMonth . ' 23:59:59'])
-            ->get();
+        if ($userRole === 'staff') {
+            $userId = auth()->id();
+            
+            $myGrupIds = \App\Models\GrupKerja::whereHas('anggota', function ($q) use ($userId) {
+                $q->where('users.id', $userId);
+            })->pluck('id');
 
-        // Ambil catatan jadwal milik manager pada bulan terpilih
+            $tasks = Tugas::where('departemen_id', $departemenId)
+                ->whereBetween('deadline_tugas', [$startOfMonth . ' 00:00:00', $endOfMonth . ' 23:59:59'])
+                ->where(function ($query) use ($userId, $myGrupIds) {
+                    $query->whereHas('detailTugas', function ($q) use ($userId, $myGrupIds) {
+                        $q->where('user_id', $userId)
+                          ->orWhereIn('grup_kerja_id', $myGrupIds);
+                    })
+                    ->orWhereDoesntHave('detailTugas');
+                })
+                ->get();
+        } else {
+            
+            $tasks = Tugas::where('departemen_id', $departemenId)
+                ->whereBetween('deadline_tugas', [$startOfMonth . ' 00:00:00', $endOfMonth . ' 23:59:59'])
+                ->get();
+        }
+
+        
         $notes = CatatanJadwal::where('user_id', auth()->id())
             ->whereBetween('tanggal', [$startOfMonth, $endOfMonth])
             ->with('tugas')
@@ -36,6 +56,10 @@ class c_kelolaJadwal extends Controller
                 'tasks' => $tasks,
                 'notes' => $notes,
             ]);
+        }
+
+        if ($userRole === 'staff') {
+            return view('staff.jadwal.index', compact('tasks', 'notes', 'month', 'year'));
         }
 
         return view('manager.jadwal.index', compact('tasks', 'notes', 'month', 'year'));
@@ -63,7 +87,7 @@ class c_kelolaJadwal extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        // Muat relasi tugas jika ada
+        
         if ($note->tugas_id) {
             $note->load('tugas');
         }
