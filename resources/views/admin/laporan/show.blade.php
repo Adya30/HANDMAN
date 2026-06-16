@@ -120,7 +120,7 @@
                                 <div class="space-y-4">
                                     <div class="space-y-1.5">
                                         <label class="text-xs font-bold text-gray-600 uppercase tracking-wider block">
-                                            Pesan Tanggapan <span class="text-red-500">*</span>
+                                            Pesan Tanggapan
                                         </label>
                                         <textarea name="tanggapan" id="respon-tanggapan" rows="5" required
                                                   placeholder="Tuliskan respon tanggapan resmi Anda..."

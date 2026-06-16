@@ -10,7 +10,8 @@ class c_departemen extends Controller
 {
     public function create()
     {
-        return view('admin.departemen.create');
+        $departemens = Departemen::all();
+        return view('admin.departemen.create', compact('departemens'));
     }
 
     public function store(Request $request)

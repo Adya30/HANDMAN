@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const toggleButton = document.querySelector('.relative button');
+    const toggleButtons = document.querySelectorAll('.relative button');
 
-    if (toggleButton) {
-        toggleButton.addEventListener('click', function () {
-            const passwordInput = document.getElementById('password_input');
-            const passwordIcon = document.getElementById('password_icon');
+    toggleButtons.forEach(button => {
+        const passwordIcon = button.querySelector('.fa-eye, .fa-eye-slash');
+        if (!passwordIcon) return;
 
-            if (passwordInput && passwordIcon) {
+        button.addEventListener('click', function () {
+            const container = button.closest('.relative');
+            if (!container) return;
+
+            const passwordInput = container.querySelector('input');
+            if (passwordInput) {
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
                     passwordIcon.classList.remove('fa-eye-slash');
@@ -18,5 +22,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
-    }
+    });
 });

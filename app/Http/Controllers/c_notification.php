@@ -45,9 +45,6 @@ class c_notification extends Controller
         }
     }
 
-
-
-
     public function readAll()
     {
         Notification::where('user_id', Auth::id())

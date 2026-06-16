@@ -33,12 +33,22 @@
 
                 <div>
                     <label for="password_input" class="block text-xs font-medium text-gray-500 mb-2 pl-1">Password Baru</label>
-                    <input type="password" id="password_input" name="password_input" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-sm font-medium text-gray-800">
+                    <div class="relative">
+                        <input type="password" id="password_input" name="password_input" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-sm font-medium text-gray-800 pr-10">
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div>
                     <label for="password_input_confirmation" class="block text-xs font-medium text-gray-500 mb-2 pl-1">Konfirmasi Password Baru</label>
-                    <input type="password" id="password_input_confirmation" name="password_input_confirmation" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-sm font-medium text-gray-800">
+                    <div class="relative">
+                        <input type="password" id="password_input_confirmation" name="password_input_confirmation" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] focus:border-[#3B28CC] focus:bg-white outline-none transition text-sm font-medium text-gray-800 pr-10">
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="w-full bg-[#3B28CC] hover:bg-[#2A1BA3] disabled:bg-gray-400 text-white font-medium py-3 rounded-full transition shadow-lg shadow-indigo-100 mt-2 cursor-pointer disabled:cursor-not-allowed">
@@ -57,7 +67,7 @@
             <img src="{{ asset('assets/logo.png') }}" alt="Ilustrasi" class="w-full h-full object-contain">
         </div>
         <h2 class="text-3xl lg:text-4xl font-bold mb-4 tracking-wide leading-tight shrink-0">Sistem Management<br>Tugas Kantor</h2>
-        <p class="text-sm lg:text-base opacity-80 font-light mt-2 shrink-0">PT Rolas Nusantara Medika Jember</p>
+        <p class="text-sm lg:text-base opacity-80 font-light mt-2 shrink-0">Sistem Management Tugas Kantor</p>
     </div>
 
 </div>

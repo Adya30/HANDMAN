@@ -14,7 +14,7 @@
 
         <div class="space-y-1.5">
             <label class="text-sm font-semibold text-gray-700">Nama Tugas</label>
-            <input type="text" name="nama_tugas" value="{{ old('nama_tugas') }}" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]" required>
+            <input type="text" name="nama_tugas" placeholder="Nama Tugas..." value="{{ old('nama_tugas') }}" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]" required>
             <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-nama_tugas"></p>
         </div>
 
@@ -71,30 +71,27 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
-
-            <div class="space-y-1.5 text-left" id="assignee_staff_container">
-                <label class="text-sm font-semibold text-gray-700">Pilih Staff Penanggung Jawab</label>
-                <select name="user_id" id="user_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
-                    <option value=""> Pilih Staff </option>
-                    @foreach($staffs as $staff)
-                        <option value="{{ $staff->id }}" {{ old('user_id') == $staff->id ? 'selected' : '' }}>{{ $staff->nama_lengkap }}</option>
-                    @endforeach
-                </select>
-                <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-user_id"></p>
-            </div>
+        <div class="space-y-1.5 text-left" id="assignee_staff_container">
+            <label class="text-sm font-semibold text-gray-700">Pilih Staff Penanggung Jawab</label>
+            <select name="user_id" id="user_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
+                <option value=""> Pilih Staff </option>
+                @foreach($staffs as $staff)
+                    <option value="{{ $staff->id }}" {{ old('user_id') == $staff->id ? 'selected' : '' }}>{{ $staff->nama_lengkap }}</option>
+                @endforeach
+            </select>
+            <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-user_id"></p>
+        </div>
 
 
-            <div class="space-y-1.5 text-left hidden" id="assignee_grup_container">
-                <label class="text-sm font-semibold text-gray-700">Pilih Grup Kerja Penanggung Jawab</label>
-                <select name="grup_kerja_id" id="grup_kerja_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
-                    <option value=""> Pilih Grup Kerja </option>
-                    @foreach($grups as $grup)
-                        <option value="{{ $grup->id }}" {{ old('grup_kerja_id') == $grup->id ? 'selected' : '' }}>{{ $grup->nama_grup }} ({{ $grup->anggota->count() }} Anggota)</option>
-                    @endforeach
-                </select>
-                <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-grup_kerja_id"></p>
-            </div>
+        <div class="space-y-1.5 text-left hidden" id="assignee_grup_container">
+            <label class="text-sm font-semibold text-gray-700">Pilih Grup Kerja Penanggung Jawab</label>
+            <select name="grup_kerja_id" id="grup_kerja_id" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC]">
+                <option value=""> Pilih Grup Kerja </option>
+                @foreach($grups as $grup)
+                    <option value="{{ $grup->id }}" {{ old('grup_kerja_id') == $grup->id ? 'selected' : '' }}>{{ $grup->nama_grup }} ({{ $grup->anggota->count() }} Anggota)</option>
+                @endforeach
+            </select>
+            <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-grup_kerja_id"></p>
         </div>
 
         <div class="space-y-3 pt-2">
@@ -114,7 +111,7 @@
                         </div>
                         <div class="flex items-center gap-2 text-xs text-gray-600 p-2 bg-gray-50 rounded-lg text-left">
                             <i class="fa-regular fa-image text-[#3B28CC]"></i>
-                            <a id="link_preview_gambar" href="#" download class="font-medium text-[#3B28CC] hover:underline truncate max-w-[85%]" title="Klik untuk mendownload gambar"></a>
+                            <a id="link_preview_gambar" href="#" target="_blank" class="font-medium text-[#3B28CC] hover:underline truncate max-w-[85%]" title="Klik untuk preview gambar"></a>
                         </div>
                     </div>
                     <div id="placeholder_gambar" class="flex flex-col items-center justify-center space-y-2">
@@ -174,154 +171,5 @@
     </form>
 </div>
 
-<script>
-    let gambarObjectUrl = null;
-    let dokumenObjectUrl = null;
-    const MAX_GAMBAR_SIZE = 10 * 1024 * 1024;
-    const MAX_DOKUMEN_SIZE = 20 * 1024 * 1024;
-    let gambarValid = true;
-    let dokumenValid = true;
 
-    function validasiForm() {
-        const errorContainer = document.getElementById('pesan_error_kapasitas');
-        const errorText = document.getElementById('teks_error_kapasitas');
-        const btnSubmit = document.getElementById('btn_submit');
-
-        if (!gambarValid) {
-            errorText.textContent = "Ukuran file Gambar melebihi batas maksimum 10MB! File tidak dapat diupload.";
-            errorContainer.classList.remove('hidden');
-            errorContainer.classList.add('flex');
-            btnSubmit.disabled = true;
-        } else if (!dokumenValid) {
-            errorText.textContent = "Ukuran file Dokumen melebihi batas maksimum 20MB! File tidak dapat diupload.";
-            errorContainer.classList.remove('hidden');
-            errorContainer.classList.add('flex');
-            btnSubmit.disabled = true;
-        } else {
-            errorContainer.classList.remove('flex');
-            errorContainer.classList.add('hidden');
-            btnSubmit.disabled = false;
-        }
-    }
-
-    document.getElementById('gambar_file').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (gambarObjectUrl) {
-            URL.revokeObjectURL(gambarObjectUrl);
-            gambarObjectUrl = null;
-        }
-
-        if (file) {
-            gambarValid = file.size <= MAX_GAMBAR_SIZE;
-            gambarObjectUrl = URL.createObjectURL(file);
-
-            const linkElement = document.getElementById('link_preview_gambar');
-            linkElement.setAttribute('href', gambarObjectUrl);
-            linkElement.setAttribute('download', file.name);
-            linkElement.textContent = file.name + ' (Klik untuk download)';
-
-            const previewContainer = document.getElementById('container_preview_gambar');
-            previewContainer.classList.remove('hidden');
-            previewContainer.classList.add('flex', 'flex-col');
-        } else {
-            gambarValid = true;
-        }
-        validasiForm();
-    });
-
-    document.getElementById('hapus_gambar').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('gambar_file').value = '';
-        const previewContainer = document.getElementById('container_preview_gambar');
-        previewContainer.classList.remove('flex', 'flex-col');
-        previewContainer.classList.add('hidden');
-        if (gambarObjectUrl) {
-            URL.revokeObjectURL(gambarObjectUrl);
-            gambarObjectUrl = null;
-        }
-        gambarValid = true;
-        validasiForm();
-    });
-
-    document.getElementById('nama_file').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (dokumenObjectUrl) {
-            URL.revokeObjectURL(dokumenObjectUrl);
-            dokumenObjectUrl = null;
-        }
-
-        if (file) {
-            dokumenValid = file.size <= MAX_DOKUMEN_SIZE;
-            dokumenObjectUrl = URL.createObjectURL(file);
-
-            const linkElement = document.getElementById('link_preview_dokumen');
-            linkElement.setAttribute('href', dokumenObjectUrl);
-            linkElement.textContent = file.name + ' (Klik untuk preview)';
-
-            const previewContainer = document.getElementById('container_preview_dokumen');
-            previewContainer.classList.remove('hidden');
-            previewContainer.classList.add('flex', 'flex-col');
-        } else {
-            dokumenValid = true;
-        }
-        validasiForm();
-    });
-
-    document.getElementById('hapus_dokumen').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('nama_file').value = '';
-        const previewContainer = document.getElementById('container_preview_dokumen');
-        previewContainer.classList.remove('flex', 'flex-col');
-        previewContainer.classList.add('hidden');
-        if (dokumenObjectUrl) {
-            URL.revokeObjectURL(dokumenObjectUrl);
-            dokumenObjectUrl = null;
-        }
-        dokumenValid = true;
-        validasiForm();
-    });
-
-    // Toggle assignee fields based on kategoritugas
-    const kategoritugasSelect = document.getElementById('kategoritugas');
-    const staffContainer = document.getElementById('assignee_staff_container');
-    const grupContainer = document.getElementById('assignee_grup_container');
-    const staffSelect = document.getElementById('user_id');
-    const grupSelect = document.getElementById('grup_kerja_id');
-
-    function toggleAssigneeFields() {
-        if (kategoritugasSelect.value === 'Individu') {
-            staffContainer.classList.remove('hidden');
-            grupContainer.classList.add('hidden');
-            staffSelect.disabled = false;
-            staffSelect.required = true;
-            grupSelect.disabled = true;
-            grupSelect.required = false;
-            grupSelect.value = '';
-        } else if (kategoritugasSelect.value === 'Kelompok') {
-            staffContainer.classList.add('hidden');
-            grupContainer.classList.remove('hidden');
-            staffSelect.disabled = true;
-            staffSelect.required = false;
-            staffSelect.value = '';
-            grupSelect.disabled = false;
-            grupSelect.required = true;
-        } else {
-            staffContainer.classList.add('hidden');
-            grupContainer.classList.add('hidden');
-            staffSelect.disabled = true;
-            staffSelect.required = false;
-            grupSelect.disabled = true;
-            grupSelect.required = false;
-        }
-    }
-
-    if (kategoritugasSelect) {
-        kategoritugasSelect.addEventListener('change', toggleAssigneeFields);
-        toggleAssigneeFields();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        initRealTimeValidation('form_tugas');
-    });
-</script>
 @endsection

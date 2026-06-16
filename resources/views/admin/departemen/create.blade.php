@@ -62,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                        @forelse($departemens ?? \App\Models\Departemen::all() as $dept)
+                        @forelse($departemens as $dept)
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 font-medium text-gray-900">{{ $dept->nama_departemen }}</td>
                                 <td class="px-6 py-4 text-gray-500 max-w-xs truncate">{{ $dept->deskripsi_departemen ?? '-' }}</td>

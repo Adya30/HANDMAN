@@ -49,7 +49,7 @@
                 
                 <div class="flex-1 text-center md:text-left space-y-2">
                     <h3 class="text-lg font-bold text-gray-900">Foto Profil</h3>
-                    <p class="text-xs text-gray-405 max-w-md">Pilih file foto berformat JPG, JPEG, PNG, atau WEBP dengan ukuran maksimum 2MB.</p>
+                    <p class="text-xs text-gray-405 max-w-md">Pilih file foto berformat JPG, JPEG, PNG, atau WEBP dengan ukuran maksimum 10MB.</p>
                     <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-foto_profil"></p>
                 </div>
             </div>

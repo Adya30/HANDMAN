@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <hr class="border-gray-150/70">
+            <hr class="border-gray-100">
 
             <div class="space-y-4 text-sm">
                 <div>
@@ -117,14 +117,14 @@
                             <div class="flex-1 space-y-1.5">
                                 <label for="grup_kerja_id" class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Masukkan ke Grup Kerja</label>
                                 <select name="grup_kerja_id" id="grup_kerja_id" required class="w-full py-2 px-3 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3B28CC]/20 focus:border-[#3B28CC] transition-all cursor-pointer">
-                                    <option value="">-- Pilih Grup Kerja --</option>
+                                    <option value=""> Pilih Grup Kerja </option>
                                     @foreach($grups as $g)
                                         <option value="{{ $g->id }}">{{ $g->nama_grup }} ({{ $g->anggota->count() }} Anggota)</option>
                                     @endforeach
                                 </select>
                                 <p class="text-xs text-red-600 error-msg hidden mt-1" id="error-grup_kerja_id"></p>
                             </div>
-                            <button type="submit" class="px-4 py-2.5 bg-[#3B28CC] text-white text-sm font-bold rounded-xl hover:bg-opacity-95 transition flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer">
+                            <button type="submit" class="w-full sm:w-auto px-4 py-2.5 bg-[#3B28CC] text-white text-sm font-bold rounded-xl hover:bg-opacity-95 transition flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer">
                                 <i class="fa-solid fa-user-plus text-xs"></i> Masukkan Grup
                             </button>
                         </form>
@@ -138,7 +138,7 @@
                     <p class="text-xs text-gray-400 mt-0.5">Penugasan individu maupun departemen yang melibatkan staff ini.</p>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 border-b border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
@@ -195,6 +195,57 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:hidden">
+                    @forelse($tugas as $t)
+                        @php
+                            $statusConfig = match($t->status_tugas) {
+                                'Selesai'              => ['bg-green-50 text-green-700 border-green-150', 'fa-circle-check'],
+                                'Menunggu Persetujuan' => ['bg-blue-50 text-blue-700 border-blue-150', 'fa-hourglass-half'],
+                                'Revisi'               => ['bg-rose-50 text-rose-700 border-rose-150', 'fa-arrow-rotate-left'],
+                                default                => ['bg-gray-100 text-gray-500 border-gray-200', 'fa-clock'],
+                            };
+                            $prioritasColor = match($t->prioritas) {
+                                'Tinggi' => 'bg-red-50 text-red-700 border-red-150',
+                                'Sedang' => 'bg-orange-50 text-orange-700 border-orange-150',
+                                default  => 'bg-green-50 text-green-700 border-green-150',
+                            };
+                        @endphp
+                        <div class="bg-gray-50/50 p-4 rounded-xl border border-gray-100/80 space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <a href="{{ route('tugas.show', $t->id) }}" class="font-bold text-sm text-gray-800 hover:text-[#3B28CC] hover:underline leading-snug">
+                                    {{ $t->nama_tugas }}
+                                </a>
+                                <span class="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 font-bold text-[10px] rounded-md border {{ $statusConfig[0] }}">
+                                    <i class="fa-solid {{ $statusConfig[1] }} text-[9px]"></i>
+                                    {{ $t->status_tugas ?? 'Belum Dikerjakan' }}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-gray-100">
+                                <div>
+                                    <span class="text-gray-400 block mb-0.5">Kategori:</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 font-semibold rounded-md text-[10px] border {{ $t->kategoritugas === 'Kelompok' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-gray-50 text-gray-700 border-gray-200' }}">
+                                        {{ $t->kategoritugas === 'Kelompok' ? 'Departemen' : $t->kategoritugas }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-400 block mb-0.5">Prioritas:</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 font-bold rounded-md text-[10px] border {{ $prioritasColor }}">{{ $t->prioritas }}</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 text-xs flex items-center justify-between text-gray-500">
+                                <span>Deadline:</span>
+                                <span class="font-mono font-medium text-gray-700">{{ \Carbon\Carbon::parse($t->deadline_tugas)->format('d M Y, H:i') }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 text-center text-xs text-gray-400 italic">
+                            Belum ada tugas terkait untuk staff ini.
+                        </div>
+                    @endforelse
                 </div>
             </div>
 

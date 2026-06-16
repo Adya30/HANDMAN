@@ -1,80 +1,5 @@
 @php
     $user = Auth::user();
-    $unreadCount = 0;
-    $notifications = collect();
-
-    if ($user) {
-        $departemenId = $user->departemen_id;
-        $userId = $user->id;
-
-
-        if ($user->nama_role === 'manager' && $departemenId) {
-            $nearingDeadlineTasks = \App\Models\Tugas::where('departemen_id', $departemenId)
-                ->where('status_tugas', '!=', 'Selesai')
-                ->whereBetween('deadline_tugas', [now(), now()->addHours(24)])
-                ->get();
-
-            foreach ($nearingDeadlineTasks as $task) {
-                $exists = \App\Models\Notification::where('user_id', $userId)
-                    ->where('type', 'deadline_mendekati')
-                    ->where('related_id', $task->id)
-                    ->exists();
-
-                if (!$exists) {
-                    \App\Models\Notification::create([
-                        'user_id'    => $userId,
-                        'title'      => 'Tugas Mendekati Deadline',
-                        'message'    => 'Tugas "' . $task->nama_tugas . '" mendekati batas waktu pengerjaan (' . \Carbon\Carbon::parse($task->deadline_tugas)->diffForHumans() . ').',
-                        'type'       => 'deadline_mendekati',
-                        'related_id' => $task->id,
-                    ]);
-                }
-            }
-        } elseif ($user->nama_role === 'staff' && $departemenId) {
-
-            $myGrupIds = \App\Models\GrupKerja::whereHas('anggota', function ($q) use ($userId) {
-                $q->where('users.id', $userId);
-            })->pluck('id');
-
-            $nearingDeadlineTasks = \App\Models\Tugas::where('departemen_id', $departemenId)
-                ->where('status_tugas', '!=', 'Selesai')
-                ->whereBetween('deadline_tugas', [now(), now()->addHours(24)])
-                ->where(function ($query) use ($userId, $myGrupIds) {
-                    $query->whereHas('detailTugas', function ($q) use ($userId, $myGrupIds) {
-                        $q->where('user_id', $userId)
-                          ->orWhereIn('grup_kerja_id', $myGrupIds);
-                    })
-                    ->orWhereDoesntHave('detailTugas');
-                })
-                ->get();
-
-            foreach ($nearingDeadlineTasks as $task) {
-                $exists = \App\Models\Notification::where('user_id', $userId)
-                    ->where('type', 'deadline_mendekati')
-                    ->where('related_id', $task->id)
-                    ->exists();
-
-                if (!$exists) {
-                    \App\Models\Notification::create([
-                        'user_id'    => $userId,
-                        'title'      => 'Tugas Mendekati Deadline',
-                        'message'    => 'Tugas "' . $task->nama_tugas . '" mendekati batas waktu pengerjaan (' . \Carbon\Carbon::parse($task->deadline_tugas)->diffForHumans() . ').',
-                        'type'       => 'deadline_mendekati',
-                        'related_id' => $task->id,
-                    ]);
-                }
-            }
-        }
-
-        $notifications = \App\Models\Notification::where('user_id', $userId)
-            ->latest()
-            ->take(10)
-            ->get();
-
-        $unreadCount = \App\Models\Notification::where('user_id', $userId)
-            ->where('is_read', false)
-            ->count();
-    }
 @endphp
 <header class="sticky top-0 z-30 h-16 bg-[#3B28CC] border-b border-blue-700/50 flex items-center justify-between px-4 sm:px-6 shadow-sm">
     <div class="flex items-center space-x-3 md:w-1/4">
@@ -87,7 +12,7 @@
         </div>
     </div>
 
-    <form id="navbar-search-form" action="" method="GET" class="hidden md:flex flex-1 justify-center max-w-xl mx-auto px-4 m-0">
+    <form id="navbar-search-form" action="" method="GET" class="hidden md:flex flex-1 justify-center max-w-xl mx-auto px-4 m-0 transition-all duration-200">
         <div class="relative w-full flex items-center bg-white/10 border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-white/20 focus-within:border-white/40 focus-within:bg-white/15 transition-all">
 
 
@@ -107,16 +32,20 @@
                 @elseif(Auth::user()->nama_role === 'manager')
                     <option class="text-gray-800" value="{{ route('tugas.index') }}" {{ request()->routeIs('tugas.*') ? 'selected' : '' }}>Kelola Tugas</option>
                     <option class="text-gray-800" value="{{ route('staff-divisi.index') }}" {{ request()->routeIs('staff-divisi.*') ? 'selected' : '' }}>Staff Divisi</option>
+                    <option class="text-gray-800" value="{{ route('manager.laporan.index') }}" {{ request()->routeIs('manager.laporan.*') ? 'selected' : '' }}>Laporan Masalah</option>
                 @elseif(Auth::user()->nama_role === 'staff')
                     <option class="text-gray-800" value="{{ route('staff.tugas.index') }}" {{ request()->routeIs('staff.tugas.*') ? 'selected' : '' }}>Tugas Saya</option>
                     <option class="text-gray-800" value="{{ route('staff.laporan.index') }}" {{ request()->routeIs('staff.laporan.*') ? 'selected' : '' }}>Laporan Masalah</option>
                 @endif
             </select>
         </div>
+        <button type="button" id="close-mobile-search" class="md:hidden ml-2 p-2 text-blue-100 hover:text-white rounded-full transition-colors cursor-pointer">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
     </form>
 
     <div class="flex items-center space-x-2 sm:space-x-4 justify-end md:w-1/4">
-        <button class="md:hidden p-2 text-blue-100 hover:text-white hover:bg-white/10 rounded-full transition-colors">
+        <button id="mobile-search-btn" class="md:hidden p-2 text-blue-100 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer">
             <i class="fa-solid fa-magnifying-glass text-lg"></i>
         </button>
 
@@ -221,107 +150,4 @@
     </div>
 </header>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('navbar-search-form');
-        const categorySelect = document.getElementById('navbar-search-category');
-        const input = document.getElementById('navbar-search-input');
 
-        if (form && categorySelect) {
-            const updateAction = () => {
-                form.action = categorySelect.value;
-            };
-
-            // Set initially
-            updateAction();
-
-            // When select is changed
-            categorySelect.addEventListener('change', updateAction);
-
-            // Set action on submit just in case
-            form.addEventListener('submit', function() {
-                updateAction();
-            });
-        }
-    });
-
-    function deleteNotification(event, id, url, csrfToken, buttonEl) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        const itemEl = buttonEl.closest('.relative.group');
-        if (!itemEl) return;
-
-        itemEl.style.transition = 'all 0.25s ease';
-        itemEl.style.opacity = '0';
-        itemEl.style.transform = 'scale(0.95)';
-
-        const isUnread = itemEl.querySelector('.bg-red-500') !== null;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                _method: 'DELETE'
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                setTimeout(() => {
-                    itemEl.remove();
-
-                    const remaining = document.querySelectorAll('#notif-menu .relative.group');
-                    if (remaining.length === 0) {
-                        const listContainer = document.querySelector('#notif-menu .divide-y');
-                        if (listContainer) {
-                            listContainer.innerHTML = `
-                                <div class="p-8 text-center text-gray-400 flex flex-col items-center gap-2">
-                                    <i class="fa-regular fa-bell-slash text-xl text-gray-300"></i>
-                                    <p class="text-xs font-medium">Tidak ada notifikasi baru.</p>
-                                </div>
-                            `;
-                        }
-                    }
-
-                    if (isUnread) {
-                        const badge = document.getElementById('notif-badge');
-                        const headerBadge = document.getElementById('notif-header-badge');
-
-                        if (badge) {
-                            let count = parseInt(badge.textContent.trim(), 10) - 1;
-                            if (count <= 0) {
-                                badge.remove();
-                            } else {
-                                badge.textContent = count;
-                            }
-                        }
-
-                        if (headerBadge) {
-                            let count = parseInt(headerBadge.textContent.trim(), 10) - 1;
-                            if (count <= 0) {
-                                headerBadge.remove();
-                            } else {
-                                headerBadge.textContent = count + ' baru';
-                            }
-                        }
-                    }
-                }, 250);
-            } else {
-                itemEl.style.opacity = '1';
-                itemEl.style.transform = 'none';
-                alert('Gagal menghapus notifikasi.');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting notification:', error);
-            itemEl.style.opacity = '1';
-            itemEl.style.transform = 'none';
-            alert('Terjadi kesalahan.');
-        });
-    }
-</script>

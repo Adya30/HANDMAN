@@ -131,7 +131,7 @@
                 <div class="p-6 space-y-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-600 uppercase tracking-wider block">
-                            Pertanyaan <span class="text-red-500">*</span>
+                            Pertanyaan
                         </label>
                         <textarea name="pertanyaan" id="edit-pertanyaan" rows="6" required
                                   placeholder="Tuliskan pertanyaan Anda..."

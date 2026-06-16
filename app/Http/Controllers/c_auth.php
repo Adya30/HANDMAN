@@ -252,7 +252,7 @@ class c_auth extends Controller
 
         DB::table('password_reset_tokens')->where('email', $request->username_input)->delete();
 
-        return redirect()->route('login')->with('status', 'Password Anda berhasil diperbarui. Silakan login menggunakan password baru.');
+        return redirect()->route('login')->with('status', 'Password Anda berhasil diperbarui.');
     }
 
     public function logout(Request $request)

@@ -12,10 +12,24 @@ class c_adminTugas extends Controller
     {
         $departemens = Departemen::orderBy('nama_departemen')->get();
 
-        $query = Tugas::with('departemen')->latest();
+        $query = Tugas::with('departemen')
+            ->orderBy('tanggal_tugas', 'desc')
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('departemen_id')) {
             $query->where('departemen_id', $request->departemen_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_tugas', $request->status);
+        }
+
+        if ($request->filled('prioritas')) {
+            $query->where('prioritas', $request->prioritas);
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategoritugas', $request->kategori);
         }
 
         $tugas = $query->get();
@@ -37,7 +51,9 @@ class c_adminTugas extends Controller
 
     public function exportPdf(Request $request)
     {
-        $query = Tugas::with('departemen')->latest();
+        $query = Tugas::with('departemen')
+            ->orderBy('tanggal_tugas', 'desc')
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('departemen_id')) {
             $query->where('departemen_id', $request->departemen_id);
@@ -45,6 +61,18 @@ class c_adminTugas extends Controller
             $departemenName = $departemen ? $departemen->nama_departemen : 'Tidak Diketahui';
         } else {
             $departemenName = 'Semua Departemen';
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_tugas', $request->status);
+        }
+
+        if ($request->filled('prioritas')) {
+            $query->where('prioritas', $request->prioritas);
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategoritugas', $request->kategori);
         }
 
         $tugasList = $query->get();
@@ -80,7 +108,17 @@ class c_adminTugas extends Controller
             $change = 0;
         }
 
-        $kategoriFilter = 'Semua';
+        $filters = [];
+        if ($request->filled('status')) {
+            $filters[] = 'Status: ' . $request->status;
+        }
+        if ($request->filled('prioritas')) {
+            $filters[] = 'Prioritas: ' . $request->prioritas;
+        }
+        if ($request->filled('kategori')) {
+            $filters[] = 'Kategori: ' . ($request->kategori === 'Kelompok' ? 'Departemen' : $request->kategori);
+        }
+        $kategoriFilter = count($filters) > 0 ? implode(', ', $filters) : 'Semua';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.tugas-pdf', compact(
             'tugasList',

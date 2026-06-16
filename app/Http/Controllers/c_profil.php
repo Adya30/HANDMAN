@@ -34,10 +34,10 @@ class c_profil extends Controller
         $messages = [];
 
         if ($request->hasFile('foto_profil')) {
-            $rules['foto_profil'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $rules['foto_profil'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:10240';
             $messages['foto_profil.image'] = 'File harus berupa gambar.';
             $messages['foto_profil.mimes'] = 'Format gambar harus jpeg, png, jpg, gif, atau webp.';
-            $messages['foto_profil.max'] = 'Ukuran gambar maksimal adalah 2MB.';
+            $messages['foto_profil.max'] = 'Ukuran gambar maksimal adalah 10MB.';
         }
 
         if ($user->nama_role === 'admin') {
@@ -48,7 +48,6 @@ class c_profil extends Controller
             $messages['password.symbols'] = 'Password harus mengandung simbol unik seperti !, @, #, dsb.';
             $messages['password.confirmed'] = 'Konfirmasi password baru tidak cocok.';
         } else {
-
             $rules = array_merge($rules, [
                 'no_telp' => 'required|numeric|digits_between:10,15|unique:users,no_telp,'.$user->id,
                 'jenis_kelamin' => 'required|in:L,P',

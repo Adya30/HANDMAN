@@ -6,6 +6,8 @@ use App\Http\Controllers\c_departemen;
 use App\Http\Controllers\c_kelolaTugas;
 use App\Http\Controllers\c_adminTugas;
 use App\Http\Controllers\c_adminDashboard;
+use App\Http\Controllers\c_managerDashboard;
+use App\Http\Controllers\c_staffDashboard;
 use App\Http\Controllers\c_staffDivisi;
 use App\Http\Controllers\c_grupKerja;
 use App\Http\Controllers\c_profil;
@@ -82,34 +84,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:manager')->group(function () {
-        Route::get('/manager/dashboard', function () {
-            $departemenId = auth()->user()->departemen_id;
-
-            $totalTugas = \App\Models\Tugas::where('departemen_id', $departemenId)->count();
-            $tugasSelesai = \App\Models\Tugas::where('departemen_id', $departemenId)->where('status_tugas', 'Selesai')->count();
-            $tugasPending = \App\Models\Tugas::where('departemen_id', $departemenId)->where('status_tugas', 'Menunggu Persetujuan')->count();
-            $tugasRevisi = \App\Models\Tugas::where('departemen_id', $departemenId)->where('status_tugas', 'Revisi')->count();
-            $tugasBerjalan = \App\Models\Tugas::where('departemen_id', $departemenId)->whereNotIn('status_tugas', ['Selesai', 'Menunggu Persetujuan'])->count();
-            $efisiensi = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 0;
-
-            $staffCount = \App\Models\User::where('departemen_id', $departemenId)->where('nama_role', 'staff')->count();
-            $totalGrup = \App\Models\GrupKerja::where('departemen_id', $departemenId)->count();
-            $totalLaporan = \App\Models\Laporan::whereHas('user', function($q) use ($departemenId) { $q->where('departemen_id', $departemenId); })->count();
-            $tugasKelompok = \App\Models\Tugas::where('departemen_id', $departemenId)->where('kategoritugas', 'Kelompok')->count();
-
-            $tugas = \App\Models\Tugas::where('departemen_id', $departemenId) ->latest() ->take(5) ->get();
-
-            $laporans = \App\Models\Laporan::whereHas('user', function($q) use ($departemenId) {
-                    $q->where('departemen_id', $departemenId);
-                })
-                ->latest() ->take(5) ->get();
-
-            return view('manager.dashboard', compact(
-                'tugas', 'totalTugas', 'tugasSelesai', 'tugasPending', 'tugasRevisi',
-                'tugasBerjalan', 'efisiensi', 'staffCount', 'totalGrup', 'totalLaporan',
-                'tugasKelompok', 'laporans'
-            ));
-        })->name('manager.dashboard');
+        Route::get('/manager/dashboard', [c_managerDashboard::class, 'index'])->name('manager.dashboard');
         Route::get('/tugas/export-pdf', [c_kelolaTugas::class, 'exportPdf'])->name('tugas.exportPdf');
         Route::resource('tugas', c_kelolaTugas::class);
         Route::put('/tugas/{id}/review', [c_kelolaTugas::class, 'reviewTugas'])->name('tugas.review');
@@ -128,45 +103,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:staff')->group(function () {
-        Route::get('/staff/dashboard', function () {
-            $departemenId = auth()->user()->departemen_id;
-            $userId = auth()->id();
-
-            $myGrupIds = \App\Models\GrupKerja::whereHas('anggota', function ($q) use ($userId) {
-                $q->where('users.id', $userId);
-            })->pluck('id');
-
-            $tugasQuery = \App\Models\Tugas::where('departemen_id', $departemenId)
-                ->where(function ($query) use ($userId, $myGrupIds) {
-                    $query->whereHas('detailTugas', function ($q) use ($userId, $myGrupIds) {
-                        $q->where('user_id', $userId) ->orWhereIn('grup_kerja_id', $myGrupIds);
-                    })
-                    ->orWhereDoesntHave('detailTugas');
-                });
-
-            $totalTugas = (clone $tugasQuery)->count();
-            $tugasSelesai = (clone $tugasQuery)->where('status_tugas', 'Selesai')->count();
-            $tugasPending = (clone $tugasQuery)->where('status_tugas', 'Menunggu Persetujuan')->count();
-            $tugasRevisi = (clone $tugasQuery)->where('status_tugas', 'Revisi')->count();
-            $tugasBerjalan = (clone $tugasQuery)->whereNotIn('status_tugas', ['Selesai', 'Menunggu Persetujuan'])->count();
-            $efisiensi = $totalTugas > 0 ? round(($tugasSelesai / $totalTugas) * 100) : 0;
-
-            $totalGrupSaya = \App\Models\GrupKerja::whereHas('anggota', function($q) use ($userId) {
-                $q->where('users.id', $userId);
-            })->count();
-            $totalLaporanSaya = \App\Models\Laporan::where('user_id', $userId)->count();
-            $tugasKelompokSaya = (clone $tugasQuery)->where('kategoritugas', 'Kelompok')->count();
-            $tugasIndividuSaya = (clone $tugasQuery)->where('kategoritugas', 'Individu')->count();
-
-            $tugas = (clone $tugasQuery) ->latest() ->take(5) ->get();
-            $laporans = \App\Models\Laporan::where('user_id', $userId) ->latest() ->take(5) ->get();
-
-            return view('staff.dashboard', compact(
-                'tugas', 'totalTugas', 'tugasSelesai', 'tugasPending', 'tugasRevisi',
-                'tugasBerjalan', 'efisiensi', 'totalGrupSaya', 'totalLaporanSaya',
-                'tugasKelompokSaya', 'tugasIndividuSaya', 'laporans'
-            ));
-        })->name('staff.dashboard');
+        Route::get('/staff/dashboard', [c_staffDashboard::class, 'index'])->name('staff.dashboard');
 
         Route::get('/staff/tugas', [c_kelolaTugas::class, 'index'])->name('staff.tugas.index');
         Route::get('/staff/tugas/{id}', [c_kelolaTugas::class, 'show'])->name('staff.tugas.show');

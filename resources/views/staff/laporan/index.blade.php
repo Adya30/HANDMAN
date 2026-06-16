@@ -5,13 +5,13 @@
 @section('content')
 <div class="space-y-6 pb-10">
 
-    <div class="flex items-center justify-between gap-4 shrink-0">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Laporan Masalah</h1>
             <p class="text-sm text-gray-500 mt-0.5">Laporkan kendala operasional atau keluhan Anda langsung ke Admin.</p>
         </div>
         <button type="button" onclick="openLaporModal()"
-                class="bg-[#3B28CC] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#2c1fa3] transition-colors flex items-center gap-2 cursor-pointer shadow-xs">
+                class="w-full sm:w-auto bg-[#3B28CC] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#2c1fa3] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs">
             <i class="fa-solid fa-plus text-xs"></i> Buat Laporan
         </button>
     </div>
@@ -115,7 +115,7 @@
                 <div class="p-6 space-y-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-600 uppercase tracking-wider block">
-                            Pertanyaan <span class="text-red-500">*</span>
+                            Pertanyaan
                         </label>
                         <textarea name="pertanyaan" rows="6" required
                                   placeholder="Tuliskan pertanyaan Anda..."

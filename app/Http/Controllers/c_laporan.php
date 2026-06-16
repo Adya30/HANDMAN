@@ -32,7 +32,9 @@ class c_laporan extends Controller
             }
 
             $laporans = $query->latest()->get();
-            return view('admin.laporan.index', compact('laporans'));
+            $belumDibalasCount = Laporan::whereIn('status', ['Menunggu', 'Dibalas'])->count();
+            $selesaiCount = Laporan::where('status', 'Selesai')->count();
+            return view('admin.laporan.index', compact('laporans', 'belumDibalasCount', 'selesaiCount'));
         }
 
         $query = Laporan::with('responder')->where('user_id', $user->id);

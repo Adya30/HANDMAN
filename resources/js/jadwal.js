@@ -236,6 +236,14 @@ document.addEventListener('click', (e) => {
         deleteNote(id);
         return;
     }
+
+    // Cancel Edit button
+    const cancelBtn = e.target.closest('#btn-cancel-edit');
+    if (cancelBtn) {
+        e.preventDefault();
+        resetNoteForm();
+        return;
+    }
 });
 
 // Auto select today or first day of month on page load

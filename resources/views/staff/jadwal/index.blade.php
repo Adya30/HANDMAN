@@ -171,7 +171,7 @@
                 </div>
 
                 <div class="flex items-center justify-end gap-2 pt-1">
-                    <button type="button" id="btn-cancel-edit" onclick="resetNoteForm()" class="hidden px-3.5 py-2 border border-gray-200 text-gray-600 bg-white rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors cursor-pointer">
+                    <button type="button" id="btn-cancel-edit" class="hidden px-3.5 py-2 border border-gray-200 text-gray-600 bg-white rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors cursor-pointer">
                         Batal
                     </button>
                     <button type="submit" id="btn-submit-note" class="px-3.5 py-2 bg-[#3B28CC] text-white rounded-lg text-xs font-semibold hover:bg-opacity-90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer">

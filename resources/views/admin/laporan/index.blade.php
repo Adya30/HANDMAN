@@ -45,7 +45,7 @@
                 <i class="fa-solid fa-inbox text-sm"></i>
                 Belum Dibalas
                 <span class="ml-1 py-0.5 px-2.5 rounded-full text-xs font-bold {{ request('status') !== 'Selesai' ? 'bg-indigo-50 text-[#3B28CC]' : 'bg-gray-100 text-gray-600' }}">
-                    {{ \App\Models\Laporan::whereIn('status', ['Menunggu', 'Dibalas'])->count() }}
+                    {{ $belumDibalasCount }}
                 </span>
             </a>
             <a href="{{ route('admin.laporan.index', ['status' => 'Selesai']) }}"
@@ -56,7 +56,7 @@
                 <i class="fa-solid fa-circle-check text-sm"></i>
                 Laporan Selesai
                 <span class="ml-1 py-0.5 px-2.5 rounded-full text-xs font-bold {{ request('status') === 'Selesai' ? 'bg-indigo-50 text-[#3B28CC]' : 'bg-gray-100 text-gray-600' }}">
-                    {{ \App\Models\Laporan::where('status', 'Selesai')->count() }}
+                    {{ $selesaiCount }}
                 </span>
             </a>
         </nav>

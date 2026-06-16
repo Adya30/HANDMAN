@@ -109,9 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const sidebarBackdrop = event.target.closest('#sidebar-backdrop');
         const userMenuBtn = event.target.closest('#user-menu-btn');
         const notifMenuBtn = event.target.closest('#notif-menu-btn');
+        const mobileSearchBtn = event.target.closest('#mobile-search-btn');
+        const closeMobileSearchBtn = event.target.closest('#close-mobile-search');
 
         if (openSidebarBtn) {
-            openSidebar();
+            const sidebar = getSidebar();
+            if (sidebar && sidebar.classList.contains('translate-x-0')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
         } else if (closeSidebarBtn) {
             closeSidebar();
         } else if (sidebarBackdrop) {
@@ -120,6 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleUserMenu(event);
         } else if (notifMenuBtn) {
             toggleNotifMenu(event);
+        } else if (mobileSearchBtn) {
+            const searchForm = document.getElementById('navbar-search-form');
+            if (searchForm) {
+                searchForm.classList.add('mobile-search-active');
+                const searchInput = document.getElementById('navbar-search-input');
+                if (searchInput) searchInput.focus();
+            }
+        } else if (closeMobileSearchBtn) {
+            const searchForm = document.getElementById('navbar-search-form');
+            if (searchForm) {
+                searchForm.classList.remove('mobile-search-active');
+            }
         } else {
             const userMenu = getUserMenu();
             const notifMenu = getNotifMenu();
@@ -131,4 +150,99 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    const form = document.getElementById('navbar-search-form');
+    const categorySelect = document.getElementById('navbar-search-category');
+    if (form && categorySelect) {
+        const updateAction = () => {
+            form.action = categorySelect.value;
+        };
+        updateAction();
+        categorySelect.addEventListener('change', updateAction);
+        form.addEventListener('submit', function() {
+            updateAction();
+        });
+    }
 });
+
+function deleteNotification(event, id, url, csrfToken, buttonEl) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const itemEl = buttonEl.closest('.relative.group');
+    if (!itemEl) return;
+
+    itemEl.style.transition = 'all 0.25s ease';
+    itemEl.style.opacity = '0';
+    itemEl.style.transform = 'scale(0.95)';
+
+    const isUnread = itemEl.querySelector('.bg-red-500') !== null;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            _method: 'DELETE'
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            setTimeout(() => {
+                itemEl.remove();
+
+                const remaining = document.querySelectorAll('#notif-menu .relative.group');
+                if (remaining.length === 0) {
+                    const listContainer = document.querySelector('#notif-menu .divide-y');
+                    if (listContainer) {
+                        listContainer.innerHTML = `
+                            <div class="p-8 text-center text-gray-400 flex flex-col items-center gap-2">
+                                <i class="fa-regular fa-bell-slash text-xl text-gray-300"></i>
+                                <p class="text-xs font-medium">Tidak ada notifikasi baru.</p>
+                            </div>
+                        `;
+                    }
+                }
+
+                if (isUnread) {
+                    const badge = document.getElementById('notif-badge');
+                    const headerBadge = document.getElementById('notif-header-badge');
+
+                    if (badge) {
+                        let count = parseInt(badge.textContent.trim(), 10) - 1;
+                        if (count <= 0) {
+                            badge.remove();
+                        } else {
+                            badge.textContent = count;
+                        }
+                    }
+
+                    if (headerBadge) {
+                        let count = parseInt(headerBadge.textContent.trim(), 10) - 1;
+                        if (count <= 0) {
+                            headerBadge.remove();
+                        } else {
+                            headerBadge.textContent = count + ' baru';
+                        }
+                    }
+                }
+            }, 250);
+        } else {
+            itemEl.style.opacity = '1';
+            itemEl.style.transform = 'none';
+            alert('Gagal menghapus notifikasi.');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting notification:', error);
+        itemEl.style.opacity = '1';
+        itemEl.style.transform = 'none';
+        alert('Terjadi kesalahan.');
+    });
+}
+
+window.deleteNotification = deleteNotification;

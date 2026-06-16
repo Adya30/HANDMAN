@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6 pb-10">
 
-    
+
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Grup Kerja</h1>
@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    
+
     @if(session('success'))
         <div class="p-4 text-sm text-green-800 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3">
             <i class="fa-solid fa-circle-check text-green-600 text-base shrink-0"></i>
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    
+
     @if($grups->isEmpty())
         <div class="bg-white border border-gray-100 rounded-2xl p-14 text-center shadow-sm">
             <div class="flex flex-col items-center gap-3">
@@ -45,11 +45,11 @@
             @foreach($grups as $grup)
             <div class="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col overflow-hidden">
 
-                
-                <div class="h-1.5 bg-gradient-to-r from-[#3B28CC] to-indigo-400"></div>
+
+                <div class="h-1.5 bg-linear-to-r from-[#3B28CC] to-indigo-400"></div>
 
                 <div class="p-5 flex flex-col gap-4 flex-1">
-                    
+
                     <div class="space-y-1">
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="text-base font-bold text-gray-900 leading-snug">{{ $grup->nama_grup }}</h3>
@@ -65,7 +65,7 @@
                         @endif
                     </div>
 
-                    
+
                     @if($grup->anggota->count() > 0)
                     <div class="flex items-center gap-2">
                         <div class="flex -space-x-2">
@@ -89,13 +89,13 @@
                     </div>
                     @endif
 
-                    
+
                     <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400">
                         <span>Dibuat {{ \Carbon\Carbon::parse($grup->created_at)->diffForHumans() }}</span>
                         <span>oleh <span class="font-semibold text-gray-600">{{ $grup->creator->nama_lengkap ?? '-' }}</span></span>
                     </div>
 
-                    
+
                     <div class="flex items-center gap-2">
                         <a href="{{ route('grup-kerja.show', $grup->id) }}"
                            class="flex-1 flex items-center justify-center gap-1.5 py-2 border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl hover:bg-gray-50 transition-colors">
@@ -106,13 +106,13 @@
                                 title="Bubarkan Grup">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
-                        <x-confirm-modal 
-                            id="dissolve-grup-{{ $grup->id }}" 
-                            title="Bubarkan Grup" 
-                            message="Apakah Anda yakin ingin membubarkan grup '{{ addslashes($grup->nama_grup) }}'? Tindakan ini tidak dapat dibatalkan." 
-                            action="{{ route('grup-kerja.destroy', $grup->id) }}" 
-                            method="DELETE" 
-                            type="danger" 
+                        <x-confirm-modal
+                            id="dissolve-grup-{{ $grup->id }}"
+                            title="Bubarkan Grup"
+                            message="Apakah Anda yakin ingin membubarkan grup '{{ addslashes($grup->nama_grup) }}'? Tindakan ini tidak dapat dibatalkan."
+                            action="{{ route('grup-kerja.destroy', $grup->id) }}"
+                            method="DELETE"
+                            type="danger"
                         />
                     </div>
                 </div>

@@ -3,10 +3,10 @@
         <div class="px-4 pt-6">
             <div class="flex items-center justify-between p-3 bg-white/10 rounded-2xl border border-white/10 backdrop-blur-sm">
                 <div class="flex items-center space-x-3 overflow-hidden">
-                    <img src="{{ asset('assets/logo.png') }}" class="w-10 h-10 rounded-full object-cover bg-white border-2 border-white/20">
-                    <div class="truncate">
-                        <h2 class="text-sm font-bold text-white truncate">PT Rolas Nusantara Medika Jember</h2>
-                        <p class="text-xs text-blue-200 font-medium capitalize">{{ Auth::user()->nama_role }}</p>
+                    <img src="{{ asset('assets/logo.png') }}" class="w-10 h-10 rounded-full object-cover bg-white border-2 border-white/20 shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <h2 class="text-xs font-bold text-white leading-tight">Rolas Nusantara Medika</h2>
+                        <p class="text-[10px] text-blue-200 font-medium capitalize mt-0.5">{{ Auth::user()->nama_role }}</p>
                     </div>
                 </div>
             </div>
@@ -62,6 +62,12 @@
                    class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('staff-divisi.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     <i class="fa-solid fa-users-gear w-5 text-center mr-3 {{ request()->routeIs('staff-divisi.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
                     Staff Divisi
+                </a>
+
+                <a href="{{ route('manager.laporan.index') }}"
+                   class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('manager.laporan.*') ? 'text-white font-semibold bg-white/15 shadow-sm' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    <i class="fa-solid fa-circle-exclamation w-5 text-center mr-3 {{ request()->routeIs('manager.laporan.*') ? 'text-white' : 'text-blue-200 group-hover:text-white' }}"></i>
+                    Laporan Masalah
                 </a>
             @endif
 

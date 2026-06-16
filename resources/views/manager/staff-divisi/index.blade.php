@@ -44,7 +44,7 @@
     <div id="tab-content-staff-list" class="space-y-6">
 
 
-        <div class="grid grid-cols-3 gap-4 shrink-0">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
             <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
                 <div class="space-y-1">
                     <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Staff</span>
@@ -133,11 +133,11 @@
                 </div>
             </div>
         @else
-            <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+            <div class="hidden md:block bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <tr class="bg-gray-50 border-bx border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <th class="p-4">Nama Staff</th>
                                 <th class="p-4">Status Pegawai</th>
                                 <th class="p-4">No. Telepon</th>
@@ -180,6 +180,44 @@
                     </table>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                @foreach($staffs as $staff)
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4 cursor-pointer hover:bg-gray-50/45 transition staff-row" data-id="{{ $staff->id }}">
+                    <div class="flex items-center gap-3">
+                        @if($staff->foto_profil)
+                            <img src="{{ asset('storage/' . $staff->foto_profil) }}" alt="{{ $staff->nama_lengkap }}"
+                                 class="w-12 h-12 rounded-full object-cover border border-indigo-50 shrink-0">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($staff->nama_lengkap) }}&background=3B28CC&color=fff&size=64"
+                                 alt="{{ $staff->nama_lengkap }}"
+                                 class="w-12 h-12 rounded-full object-cover border border-indigo-50 shrink-0">
+                        @endif
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ $staff->nama_lengkap }}</p>
+                            <p class="text-xs text-gray-400 truncate">{{ $staff->email }}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-gray-100">
+                        <div>
+                            <span class="text-gray-400 block mb-0.5">Status Pegawai:</span>
+                            <span class="inline-flex items-center px-2 py-0.5 bg-gray-50 text-gray-650 font-semibold rounded-md border border-gray-200 text-[10px]">
+                                {{ $staff->status_pegawai }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 block mb-0.5">No. Telepon:</span>
+                            <span class="text-gray-700 font-semibold font-mono text-[11px]">{{ $staff->no_telp ?? '-' }}</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2 border-t border-gray-100" onclick="event.stopPropagation()">
+                        <a href="{{ route('staff-divisi.show', $staff->id) }}" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-50/50 hover:bg-indigo-50 text-[#3B28CC] font-bold text-xs rounded-xl border border-indigo-100 transition">
+                            Detail Profil <i class="fa-solid fa-angle-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
         @endif
     </div>
 
@@ -196,7 +234,7 @@
                 </div>
             </div>
         @else
-            <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+            <div class="hidden md:block bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -270,14 +308,6 @@
                                             <i class="fa-solid fa-trash-can text-xs"></i>
                                         </button>
                                     </div>
-                                    <x-confirm-modal
-                                        id="dissolve-grup-{{ $grup->id }}"
-                                        title="Bubarkan Grup"
-                                        message="Apakah Anda yakin ingin membubarkan grup '{{ addslashes($grup->nama_grup) }}'? Tindakan ini tidak dapat dibatalkan."
-                                        action="{{ route('grup-kerja.destroy', $grup->id) }}"
-                                        method="DELETE"
-                                        type="danger"
-                                    />
                                 </td>
                             </tr>
                             @endforeach
@@ -285,6 +315,87 @@
                     </table>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                @foreach($grups as $grup)
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4 cursor-pointer hover:bg-gray-50/45 transition-colors grup-row" data-id="{{ $grup->id }}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center text-violet-600 shrink-0">
+                            <i class="fa-solid fa-people-group text-lg"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ $grup->nama_grup }}</p>
+                            @if($grup->deskripsi)
+                                <p class="text-xs text-gray-400 mt-0.5 truncate">{{ $grup->deskripsi }}</p>
+                            @else
+                                <p class="text-xs text-gray-300 italic mt-0.5">Tidak ada deskripsi</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-50 text-xs">
+                        <div>
+                            <span class="text-gray-400 block mb-0.5">Pembuat:</span>
+                            <span class="text-gray-700 font-bold">{{ $grup->creator->nama_lengkap ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 block mb-0.5 text-right">Tanggal:</span>
+                            <span class="text-gray-500 text-[10px] block mt-0.5 text-right">{{ \Carbon\Carbon::parse($grup->created_at)->diffForHumans() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-50">
+                        <div class="flex items-center gap-2">
+                            @if($grup->anggota->count() > 0)
+                                <div class="flex -space-x-1.5 shrink-0">
+                                    @foreach($grup->anggota->take(3) as $anggota)
+                                        @if($anggota->foto_profil)
+                                            <img src="{{ asset('storage/' . $anggota->foto_profil) }}"
+                                                 title="{{ $anggota->nama_lengkap }}"
+                                                 class="w-6 h-6 rounded-full object-cover border-2 border-white shadow-xs shrink-0">
+                                        @else
+                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($anggota->nama_lengkap) }}&background=3B28CC&color=fff&size=64"
+                                                 title="{{ $anggota->nama_lengkap }}"
+                                                 class="w-6 h-6 rounded-full object-cover border-2 border-white shadow-xs shrink-0">
+                                        @endif
+                                    @endforeach
+                                    @if($grup->anggota->count() > 3)
+                                        <div class="w-6 h-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[8px] font-bold text-gray-500 shadow-xs shrink-0">
+                                            +{{ $grup->anggota->count() - 3 }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                            <span class="inline-flex items-center px-2 py-0.5 bg-indigo-50 text-[#3B28CC] text-[10px] font-bold rounded-md">
+                                {{ $grup->anggota->count() }} anggota
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2" onclick="event.stopPropagation()">
+                            <button type="button" onclick="showGroupDetail('{{ $grup->id }}')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50/50 hover:bg-indigo-50 text-[#3B28CC] font-bold text-xs rounded-lg border border-indigo-100 transition cursor-pointer">
+                                Detail
+                            </button>
+                            <button type="button" onclick="openModal('dissolve-grup-{{ $grup->id }}')"
+                                    class="flex items-center justify-center w-8 h-8 border border-rose-100 text-rose-500 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                    title="Bubarkan Grup">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            @foreach($grups as $grup)
+                <x-confirm-modal
+                    id="dissolve-grup-{{ $grup->id }}"
+                    title="Bubarkan Grup"
+                    message="Apakah Anda yakin ingin membubarkan grup '{{ addslashes($grup->nama_grup) }}'? Tindakan ini tidak dapat dibatalkan."
+                    action="{{ route('grup-kerja.destroy', $grup->id) }}"
+                    method="DELETE"
+                    type="danger"
+                />
+            @endforeach
 
             <div class="text-xs text-gray-400 text-right">
                 Total <span class="font-semibold text-gray-600">{{ $grups->count() }}</span> grup kerja
@@ -324,7 +435,7 @@
 
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-600 uppercase tracking-wider block">
-                            Nama Grup <span class="text-red-500">*</span>
+                            Nama Grup
                         </label>
                         <input type="text" name="nama_grup" id="input-nama-grup"
                                placeholder="Contoh: Tim Proyek Alpha..."
@@ -412,116 +523,11 @@
     </div>
 </div>
 
-<script>
-const allGroups = @json($grups);
-
-function switchTab(tabId) {
-    document.getElementById('tab-content-staff-list').classList.add('hidden');
-    document.getElementById('tab-content-grup-kerja').classList.add('hidden');
-
-    const btnStaff = document.getElementById('tab-btn-staff-list');
-    const btnGrup = document.getElementById('tab-btn-grup-kerja');
-
-    btnStaff.className = "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm flex items-center gap-2 cursor-pointer transition-all";
-    btnGrup.className = "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-semibold text-sm flex items-center gap-2 cursor-pointer transition-all";
-
-    if (tabId === 'staff-list') {
-        document.getElementById('tab-content-staff-list').classList.remove('hidden');
-        btnStaff.className = "border-[#3B28CC] text-[#3B28CC] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 cursor-pointer transition-all";
-    } else {
-        document.getElementById('tab-content-grup-kerja').classList.remove('hidden');
-        btnGrup.className = "border-[#3B28CC] text-[#3B28CC] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm flex items-center gap-2 cursor-pointer transition-all";
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tab = urlParams.get('tab') || '{{ session("tab") }}';
-    if (tab === 'grup-kerja') {
-        switchTab('grup-kerja');
-    } else {
-        switchTab('staff-list');
-    }
-});
-
-document.querySelectorAll('.staff-row').forEach(row => {
-    row.addEventListener('click', function() {
-        window.location.href = "{{ url('staff-divisi') }}/" + this.dataset.id;
-    });
-});
-
-document.querySelectorAll('.grup-row').forEach(row => {
-    row.addEventListener('click', function() {
-        showGroupDetail(this.dataset.id);
-    });
-});
-
-function openGrupModal() {
-    document.getElementById('input-nama-grup').value = '';
-    document.getElementById('input-deskripsi').value = '';
-
-    const modal = document.getElementById('modal-grup');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('input-nama-grup').focus();
-}
-
-function showGroupDetail(id) {
-    const grup = allGroups.find(g => g.id === id);
-    if (!grup) return;
-
-    document.getElementById('detail-grup-nama').textContent = 'Detail Grup - ' + grup.nama_grup;
-    document.getElementById('detail-grup-deskripsi').textContent = grup.deskripsi || 'Tidak ada deskripsi.';
-
-    const dateStr = new Date(grup.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const creatorName = grup.creator ? grup.creator.nama_lengkap : '-';
-    document.getElementById('detail-grup-meta').textContent = `Dibuat oleh ${creatorName} pada ${dateStr}`;
-    document.getElementById('detail-grup-anggota-count').textContent = grup.anggota.length;
-
-    const listEl = document.getElementById('detail-grup-anggota-list');
-    listEl.innerHTML = '';
-    grup.anggota.forEach(m => {
-        const foto = m.foto_profil ? `{{ asset('storage') }}/${m.foto_profil}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.nama_lengkap)}&background=3B28CC&color=fff&size=64`;
-        const item = document.createElement('div');
-        item.className = 'flex items-center gap-3 p-2.5 bg-gray-50 rounded-xl border border-indigo-50 shrink-0';
-        item.innerHTML = `
-            <img src="${foto}" class="w-8 h-8 rounded-full object-cover border border-indigo-50 shrink-0">
-            <div class="min-w-0 flex-1">
-                <p class="text-sm font-semibold text-gray-800 truncate">${m.nama_lengkap}</p>
-                <p class="text-xs text-gray-400 truncate">${m.email}</p>
-            </div>
-        `;
-        listEl.appendChild(item);
-    });
-
-    const formDelete = document.getElementById('form-delete-grup');
-    formDelete.action = `{{ url('grup-kerja') }}/${grup.id}`;
-
-    const modal = document.getElementById('modal-detail-grup');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeGrupModal() {
-    document.getElementById('modal-grup').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-function closeDetailGrupModal() {
-    document.getElementById('modal-detail-grup').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-document.getElementById('form-grup')?.addEventListener('submit', function(e) {
-    const btn = document.getElementById('btn-submit-grup');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Memproses...';
-});
-
-document.getElementById('filter-status')?.addEventListener('change', () => document.getElementById('filter-form').submit());
-
-document.addEventListener('DOMContentLoaded', () => {
-    initRealTimeValidation('form-grup');
-});
-</script>
+<div id="staff-divisi-data" 
+     data-grups="{{ json_encode($grups) }}" 
+     data-url-staff-divisi="{{ url('staff-divisi') }}" 
+     data-url-grup-kerja="{{ url('grup-kerja') }}" 
+     data-tab-session="{{ session('tab') }}" 
+     data-asset-storage="{{ asset('storage') }}">
+</div>
 @endsection

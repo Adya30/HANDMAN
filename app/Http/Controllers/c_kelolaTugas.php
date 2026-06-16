@@ -31,22 +31,42 @@ class c_kelolaTugas extends Controller
                         ->orWhereDoesntHave('detailTugas');
                 });
 
-            if ($request->filled('search')) {
-                $query->where('nama_tugas', 'like', '%' . $request->search . '%');
+            if ($request->filled('status')) {
+                $query->where('status_tugas', $request->status);
             }
 
-            $tugas = $query->latest()->get();
+            if ($request->filled('prioritas')) {
+                $query->where('prioritas', $request->prioritas);
+            }
+
+            if ($request->filled('kategori')) {
+                $query->where('kategoritugas', $request->kategori);
+            }
+
+            $tugas = $query->orderBy('tanggal_tugas', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             return view('staff.tugas.index', compact('tugas'));
         }
 
         $query = Tugas::where('departemen_id', $departemenId);
 
-        if ($request->filled('search')) {
-            $query->where('nama_tugas', 'like', '%' . $request->search . '%');
+        if ($request->filled('status')) {
+            $query->where('status_tugas', $request->status);
         }
 
-        $tugas = $query->latest()->get();
+        if ($request->filled('prioritas')) {
+            $query->where('prioritas', $request->prioritas);
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategoritugas', $request->kategori);
+        }
+
+        $tugas = $query->orderBy('tanggal_tugas', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('manager.tugas.index', compact('tugas'));
     }
@@ -493,15 +513,72 @@ class c_kelolaTugas extends Controller
 
         $validator->validate();
 
+        $existingLampiran = $tugas->lampirans()->get()->filter(function($item) use ($tugas) {
+            if ($item->gambar_file && str_contains($item->gambar_file, 'pengumpulan/')) {
+                return true;
+            }
+            if ($item->nama_file && str_contains($item->nama_file, 'pengumpulan/')) {
+                return true;
+            }
+            if (!$item->gambar_file && !$item->nama_file && $item->link_tugas) {
+                return $item->created_at->diffInSeconds($tugas->created_at) >= 15;
+            }
+            return false;
+        })->first();
+
         $hasGambar = $request->hasFile('gambar_file');
         $hasDokumen = $request->hasFile('nama_file');
 
-        if ($hasGambar || $hasDokumen || $request->filled('link_tugas')) {
-            $tugas->lampirans()->create([
-                'gambar_file' => $hasGambar ? $request->file('gambar_file')->store('pengumpulan/gambar', 'public') : null,
-                'nama_file' => $hasDokumen ? $request->file('nama_file')->store('pengumpulan/dokumen', 'public') : null,
-                'link_tugas' => $request->link_tugas,
-            ]);
+        // Tentukan path gambar
+        $gambarPath = null;
+        if ($hasGambar) {
+            if ($existingLampiran && $existingLampiran->gambar_file) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingLampiran->gambar_file);
+            }
+            $gambarPath = $request->file('gambar_file')->store('pengumpulan/gambar', 'public');
+        } elseif ($request->filled('existing_gambar')) {
+            $gambarPath = $existingLampiran ? $existingLampiran->gambar_file : null;
+        } else {
+            if ($existingLampiran && $existingLampiran->gambar_file) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingLampiran->gambar_file);
+            }
+        }
+
+        // Tentukan path dokumen
+        $dokumenPath = null;
+        if ($hasDokumen) {
+            if ($existingLampiran && $existingLampiran->nama_file) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingLampiran->nama_file);
+            }
+            $dokumenPath = $request->file('nama_file')->store('pengumpulan/dokumen', 'public');
+        } elseif ($request->filled('existing_dokumen')) {
+            $dokumenPath = $existingLampiran ? $existingLampiran->nama_file : null;
+        } else {
+            if ($existingLampiran && $existingLampiran->nama_file) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingLampiran->nama_file);
+            }
+        }
+
+        $linkTugas = $request->link_tugas;
+
+        if ($gambarPath || $dokumenPath || $linkTugas) {
+            if ($existingLampiran) {
+                $existingLampiran->update([
+                    'gambar_file' => $gambarPath,
+                    'nama_file' => $dokumenPath,
+                    'link_tugas' => $linkTugas,
+                ]);
+            } else {
+                $tugas->lampirans()->create([
+                    'gambar_file' => $gambarPath,
+                    'nama_file' => $dokumenPath,
+                    'link_tugas' => $linkTugas,
+                ]);
+            }
+        } else {
+            if ($existingLampiran) {
+                $existingLampiran->delete();
+            }
         }
 
         $tugas->update([
@@ -541,7 +618,10 @@ class c_kelolaTugas extends Controller
         $departemenId = auth()->user()->departemen_id;
         $departemenName = auth()->user()->departemen ? auth()->user()->departemen->nama_departemen : 'Departemen Anda';
 
-        $query = Tugas::where('departemen_id', $departemenId)->with('departemen')->latest();
+        $query = Tugas::where('departemen_id', $departemenId)
+            ->with('departemen')
+            ->orderBy('tanggal_tugas', 'desc')
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('status')) {
             $query->where('status_tugas', $request->status);

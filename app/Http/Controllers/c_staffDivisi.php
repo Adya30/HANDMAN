@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class c_staffDivisi extends Controller
 {
-    
-
 
     public function index(Request $request)
     {
@@ -18,7 +16,7 @@ class c_staffDivisi extends Controller
             ->where('departemen_id', $departemenId)
             ->where('nama_role', 'staff');
 
-        
+
         if ($request->filled('search')) {
             $keyword = $request->search;
             $query->where(function ($q) use ($keyword) {
@@ -27,7 +25,7 @@ class c_staffDivisi extends Controller
             });
         }
 
-        
+
         if ($request->filled('status')) {
             $query->where('status_pegawai', $request->status);
         }
@@ -38,28 +36,15 @@ class c_staffDivisi extends Controller
         $staffAktif  = $staffs->where('is_active', 1)->count();
         $staffNonAktif = $staffs->where('is_active', 0)->count();
 
-        
-        $grups = \App\Models\GrupKerja::with(['anggota', 'creator'])
-            ->where('departemen_id', $departemenId)
-            ->latest()
-            ->get();
 
-        return view('manager.staff-divisi.index', compact(
-            'staffs',
-            'totalStaff',
-            'staffAktif',
-            'staffNonAktif',
-            'grups'
-        ));
+        $grups = \App\Models\GrupKerja::with(['anggota', 'creator']) ->where('departemen_id', $departemenId) ->latest() ->get();
+        return view('manager.staff-divisi.index', compact( 'staffs', 'totalStaff', 'staffAktif', 'staffNonAktif', 'grups' ));
     }
-
-    
-
 
     public function show(string $id)
     {
         $departemenId = auth()->user()->departemen_id;
-        
+
         $staff = User::where('departemen_id', $departemenId)
             ->where('nama_role', 'staff')
             ->findOrFail($id);
@@ -67,13 +52,13 @@ class c_staffDivisi extends Controller
         $myGrups = $staff->grupKerjas;
         $myGrupIds = $myGrups->pluck('id');
 
-        
+
         $grups = \App\Models\GrupKerja::where('departemen_id', $departemenId)
             ->whereNotIn('id', $myGrupIds)
             ->orderBy('nama_grup')
             ->get();
 
-        
+
         $userId = $staff->id;
         $tugas = \App\Models\Tugas::where('departemen_id', $departemenId)
             ->where(function ($query) use ($userId, $myGrupIds) {
@@ -88,9 +73,6 @@ class c_staffDivisi extends Controller
 
         return view('manager.staff-divisi.show', compact('staff', 'grups', 'myGrups', 'tugas'));
     }
-
-    
-
 
     public function joinGroup(Request $request, string $id)
     {
@@ -120,16 +102,13 @@ class c_staffDivisi extends Controller
 
         $grup = \App\Models\GrupKerja::where('departemen_id', $departemenId)->findOrFail($request->grup_kerja_id);
 
-        
+
         if (!$grup->anggota()->where('users.id', $staff->id)->exists()) {
             $grup->anggota()->attach($staff->id);
         }
 
         return redirect()->back()->with('success', 'Staff berhasil dimasukkan ke dalam grup kerja.');
     }
-
-    
-
 
     public function leaveGroup(Request $request, string $id)
     {
@@ -159,7 +138,6 @@ class c_staffDivisi extends Controller
 
         $grup = \App\Models\GrupKerja::where('departemen_id', $departemenId)->findOrFail($request->grup_kerja_id);
 
-        
         $grup->anggota()->detach($staff->id);
 
         return redirect()->back()->with('success', 'Staff berhasil dikeluarkan dari grup kerja.');

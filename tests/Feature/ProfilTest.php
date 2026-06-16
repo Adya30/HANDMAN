@@ -140,3 +140,66 @@ test('manager/staff can update allowed fields and photo but restricted fields re
     $this->assertNotNull($staff->foto_profil);
     Storage::disk('public')->assertExists($staff->foto_profil);
 });
+
+test('user can upload profile photo up to 10MB', function () {
+    Storage::fake('public');
+    $user = User::create([
+        'id'            => (string) Str::ulid(),
+        'nama_lengkap'  => 'Staff User',
+        'email'         => 'staff@example.com',
+        'password'      => Hash::make('password123'),
+        'no_telp'       => '081234567890',
+        'jenis_kelamin' => 'L',
+        'tanggal_lahir' => '1995-01-01',
+        'nama_role'     => 'staff',
+        'is_active'     => 1,
+    ]);
+
+    // Create a fake image file of exactly 10MB (10240 KB)
+    $file = UploadedFile::fake()->create('avatar.jpg', 10240, 'image/jpeg');
+
+    $response = $this->actingAs($user)->put(route('profil.update'), [
+        'no_telp'       => '081234567890',
+        'jenis_kelamin' => 'L',
+        'tanggal_lahir' => '1995-01-01',
+        'alamat'        => 'Address Info',
+        'foto_profil'   => $file,
+    ]);
+
+    $response->assertStatus(200);
+    $user->refresh();
+    $this->assertNotNull($user->foto_profil);
+    Storage::disk('public')->assertExists($user->foto_profil);
+});
+
+test('user cannot upload profile photo larger than 10MB', function () {
+    Storage::fake('public');
+    $user = User::create([
+        'id'            => (string) Str::ulid(),
+        'nama_lengkap'  => 'Staff User',
+        'email'         => 'staff@example.com',
+        'password'      => Hash::make('password123'),
+        'no_telp'       => '081234567890',
+        'jenis_kelamin' => 'L',
+        'tanggal_lahir' => '1995-01-01',
+        'nama_role'     => 'staff',
+        'is_active'     => 1,
+    ]);
+
+    // Create a fake image file of more than 10MB (10241 KB)
+    $file = UploadedFile::fake()->create('large_avatar.jpg', 10241, 'image/jpeg');
+
+    $response = $this->actingAs($user)->put(route('profil.update'), [
+        'no_telp'       => '081234567890',
+        'jenis_kelamin' => 'L',
+        'tanggal_lahir' => '1995-01-01',
+        'alamat'        => 'Address Info',
+        'foto_profil'   => $file,
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors(['foto_profil']);
+    
+    $user->refresh();
+    $this->assertNull($user->foto_profil);
+});

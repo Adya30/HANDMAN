@@ -9,3 +9,34 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@utility mobile-search-active {
+    display: flex !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-color: #3B28CC !important;
+    z-index: 40 !important;
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+[role="button"],
+[onclick] {
+    cursor: pointer;
+}
+
+button:disabled,
+[type="button"]:disabled,
+[type="submit"]:disabled,
+[type="reset"]:disabled,
+[disabled] {
+    cursor: not-allowed !important;
+}

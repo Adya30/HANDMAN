@@ -14,7 +14,7 @@
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
             <a href="{{ route('tugas.edit', $tugas->id) }}" class="bg-indigo-50/50 text-[#3B28CC] border border-indigo-100 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-50 transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Tugas
+                <i class="fa-solid fa-pen-to-square"></i> Edit
             </a>
         </div>
     </div>
@@ -31,7 +31,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div>
-                <h4 class="text-sm font-bold text-amber-800">Catatan Revisi Aktif:</h4>
+                <h4 class="text-sm font-bold text-amber-800">Catatan Revisi :</h4>
                 <p class="text-xs text-amber-700 mt-0.5 leading-relaxed">{{ $tugas->catatan_revisi }}</p>
             </div>
         </div>
@@ -70,13 +70,13 @@
                     <span class="block font-semibold text-gray-400 text-xs uppercase tracking-wider">Status Saat Ini</span>
                     <div class="mt-1.5">
                         @if($tugas->status_tugas == 'Selesai')
-                            <span class="px-2.5 py-0.5 text-xs font-bold bg-green-50 text-green-700 rounded-lg border border-green-100">Selesai</span>
+                            <span class="px-2.5 py-0.5 text-xs font-bold bg-green-50 text-green-700 rounded-lg border border-green-100 whitespace-nowrap">Selesai</span>
                         @elseif($tugas->status_tugas == 'Menunggu Persetujuan')
-                            <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-50 text-blue-700 rounded-lg border border-blue-100">Menunggu Persetujuan</span>
+                            <span class="px-1.5 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-700 rounded-lg border border-blue-100 whitespace-nowrap">Menunggu Persetujuan</span>
                         @elseif($tugas->status_tugas == 'Revisi')
-                            <span class="px-2.5 py-0.5 text-xs font-bold bg-rose-50 text-rose-700 rounded-lg border border-rose-100">Revisi</span>
+                            <span class="px-2.5 py-0.5 text-xs font-bold bg-rose-50 text-rose-700 rounded-lg border border-rose-100 whitespace-nowrap">Revisi</span>
                         @else
-                            <span class="px-2.5 py-0.5 text-xs font-bold bg-gray-50 text-gray-700 rounded-lg border border-gray-200">Belum Dikerjakan</span>
+                            <span class="px-2.5 py-0.5 text-xs font-bold bg-gray-50 text-gray-700 rounded-lg border border-gray-200 whitespace-nowrap">Belum Dikerjakan</span>
                         @endif
                     </div>
                 </div>
@@ -97,8 +97,8 @@
                 </div>
             </div>
         </div>
-            
-            
+
+
             <div class="space-y-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Deskripsi Tugas</h3>
                 <p class="text-sm text-gray-700 whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100 leading-relaxed">
@@ -108,10 +108,10 @@
 
             <hr class="border-gray-100">
 
-            
+
             <div class="space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Berkas Pendukung dari Manajer</h4>
-                
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Berkas Pendukung dari Manager</h4>
+
                 @php
                     $lampiranManager = $tugas->lampirans->filter(function($item) use ($tugas) {
                         if ($item->gambar_file && str_contains($item->gambar_file, 'pengumpulan/')) {
@@ -131,13 +131,18 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         @foreach($lampiranManager as $lm)
                             @if($lm->gambar_file)
-                                <div class="border border-gray-100 rounded-xl overflow-hidden p-2 bg-gray-50 flex flex-col space-y-2">
-                                    <div class="w-full aspect-video rounded-lg overflow-hidden bg-white border border-gray-100">
-                                        <img src="{{ asset('storage/' . $lm->gambar_file) }}" class="w-full h-full object-cover">
+                                <div class="border border-gray-100 rounded-xl p-4 bg-gray-50 flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 bg-indigo-50 text-[#3B28CC] rounded-xl flex items-center justify-center shrink-0">
+                                            <i class="fa-regular fa-image text-lg"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <a href="{{ asset('storage/' . $lm->gambar_file) }}" target="_blank" class="text-xs font-semibold text-gray-800 hover:text-[#3B28CC] hover:underline truncate block">
+                                                {{ basename($lm->gambar_file) }}
+                                            </a>
+                                            <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Gambar</p>
+                                        </div>
                                     </div>
-                                    <a href="{{ asset('storage/' . $lm->gambar_file) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#3B28CC] hover:underline px-1">
-                                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Lihat Gambar Penuh
-                                    </a>
                                 </div>
                             @endif
 
@@ -145,16 +150,15 @@
                                 <div class="border border-gray-100 rounded-xl p-4 bg-gray-50 flex items-center justify-between gap-4">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="w-10 h-10 bg-indigo-50 text-[#3B28CC] rounded-xl flex items-center justify-center shrink-0">
-                                            <i class="fa-solid fa-file-lines text-lg"></i>
+                                            <i class="fa-regular fa-file-lines text-lg"></i>
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="text-xs font-semibold text-gray-800 truncate">{{ basename($lm->nama_file) }}</p>
+                                            <a href="{{ asset('storage/' . $lm->nama_file) }}" target="_blank" class="text-xs font-semibold text-gray-800 hover:text-[#3B28CC] hover:underline truncate block">
+                                                {{ basename($lm->nama_file) }}
+                                            </a>
                                             <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{{ pathinfo($lm->nama_file, PATHINFO_EXTENSION) }} FILE</p>
                                         </div>
                                     </div>
-                                    <a href="{{ asset('storage/' . $lm->nama_file) }}" download class="w-8 h-8 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors shrink-0">
-                                        <i class="fa-solid fa-download text-xs"></i>
-                                    </a>
                                 </div>
                             @endif
 
@@ -177,17 +181,17 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="text-xs text-gray-400 italic">Tidak ada berkas pendukung dari manajer.</p>
+                    <p class="text-xs text-gray-400 italic">Tidak ada berkas pendukung dari manager.</p>
                 @endif
             </div>
 
             @if($tugas->status_tugas !== 'Belum Dikerjakan')
                 <hr class="border-gray-100">
 
-                
+
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Berkas Pengumpulan Hasil Kerja Staff</h4>
-                    
+
                     @php
                         $pengumpulanStaff = $tugas->lampirans->filter(function($item) use ($tugas) {
                             if ($item->gambar_file && str_contains($item->gambar_file, 'pengumpulan/')) {
@@ -206,45 +210,56 @@
                     @endphp
 
                     @if($hasPengumpulan)
-                        <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @if($pengumpulanStaff->gambar_file)
-                                <div class="space-y-1">
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lampiran Foto Hasil</p>
-                                    <div class="group relative border border-gray-200 rounded-xl overflow-hidden bg-gray-50 aspect-video flex items-center justify-center max-w-md">
-                                        <img src="{{ asset('storage/' . $pengumpulanStaff->gambar_file) }}" class="w-full h-full object-cover">
-                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                            <a href="{{ asset('storage/' . $pengumpulanStaff->gambar_file) }}" target="_blank" class="bg-white text-gray-800 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1 hover:bg-gray-100">
-                                                <i class="fa-solid fa-eye"></i> Lihat Foto
+                                <div class="border border-gray-100 rounded-xl p-4 bg-gray-50 flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 bg-indigo-50 text-[#3B28CC] rounded-xl flex items-center justify-center shrink-0">
+                                            <i class="fa-regular fa-image text-lg"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <a href="{{ asset('storage/' . $pengumpulanStaff->gambar_file) }}" target="_blank" class="text-xs font-semibold text-gray-800 hover:text-[#3B28CC] hover:underline truncate block">
+                                                {{ basename($pengumpulanStaff->gambar_file) }}
                                             </a>
+                                            <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Gambar</p>
                                         </div>
                                     </div>
                                 </div>
                             @endif
 
                             @if($pengumpulanStaff->nama_file)
-                                <div class="space-y-1">
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lampiran Dokumen Hasil</p>
-                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-xl bg-gray-50/50 max-w-md">
-                                        <div class="flex items-center gap-2 min-w-0 flex-1">
-                                            <i class="fa-regular fa-file-lines text-blue-500 text-lg shrink-0"></i>
-                                            <p class="text-xs font-medium text-gray-700 truncate">{{ basename($pengumpulanStaff->nama_file) }}</p>
+                                <div class="border border-gray-100 rounded-xl p-4 bg-gray-50 flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 bg-indigo-50 text-[#3B28CC] rounded-xl flex items-center justify-center shrink-0">
+                                            <i class="fa-regular fa-file-lines text-lg"></i>
                                         </div>
-                                        <a href="{{ asset('storage/' . $pengumpulanStaff->nama_file) }}" target="_blank" class="p-1.5 text-[#3B28CC] hover:bg-[#3B28CC]/5 rounded-lg transition-colors ml-2 shrink-0">
-                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                        </a>
+                                        <div class="min-w-0">
+                                            <a href="{{ asset('storage/' . $pengumpulanStaff->nama_file) }}" target="_blank" class="text-xs font-semibold text-gray-800 hover:text-[#3B28CC] hover:underline truncate block">
+                                                {{ basename($pengumpulanStaff->nama_file) }}
+                                            </a>
+                                            <p class="text-[10px] text-gray-400 uppercase font-medium">{{ pathinfo($pengumpulanStaff->nama_file, PATHINFO_EXTENSION) }} File</p>
+                                        </div>
                                     </div>
                                 </div>
                             @endif
 
                             @if($pengumpulanStaff->link_tugas)
-                                <div class="space-y-1">
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Link Pengumpulan Hasil</p>
-                                    <a href="{{ $pengumpulanStaff->link_tugas }}" target="_blank" class="flex items-center gap-2 p-3 border border-blue-100 rounded-xl bg-blue-50/30 text-xs font-semibold text-[#3B28CC] hover:underline break-all max-w-md">
-                                        <i class="fa-solid fa-link shrink-0"></i>
-                                        <span class="truncate">{{ $pengumpulanStaff->link_tugas }}</span>
+                                <div class="border border-gray-100 p-4 rounded-xl bg-gray-50 flex items-center justify-between sm:col-span-2">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-link text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="text-xs font-medium text-gray-800">Tautan Hasil Kerja / Workspace</p>
+                                            <p class="text-[10px] text-gray-400 truncate max-w-md">{{ $pengumpulanStaff->link_tugas }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ $pengumpulanStaff->link_tugas }}" target="_blank" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-[#3B28CC] bg-white border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors gap-1 shrink-0">
+                                        Buka Tautan <i class="fa-solid fa-external-link text-[10px]"></i>
                                     </a>
                                 </div>
                             @endif
+                        </div>
 
                             <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
                                 <span>Diserahkan pada:</span>
@@ -253,7 +268,7 @@
 
                             <hr class="border-gray-100">
 
-                            
+
                             <div class="space-y-3">
                                 @if($tugas->status_tugas === 'Menunggu Persetujuan')
                                     <div class="flex items-center gap-2">
@@ -261,7 +276,7 @@
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="action" value="setujui">
-                                            <button type="submit" class="w-full bg-green-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5 shadow-xs">
+                                            <button type="submit" class="w-full bg-green-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
                                                 <i class="fa-regular fa-circle-check text-sm"></i> Setujui Tugas
                                             </button>
                                         </form>
@@ -269,7 +284,7 @@
                                             <i class="fa-solid fa-arrow-rotate-left"></i> Ajukan Revisi
                                         </button>
                                     </div>
-     
+
                                     <form id="form_revisi" action="{{ route('tugas.review', $tugas->id) }}" method="POST" class="hidden border border-amber-200 bg-amber-50/30 rounded-xl p-4 space-y-3">
                                         @csrf
                                         @method('PUT')
