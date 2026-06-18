@@ -149,7 +149,3 @@ Untuk menjalankan suite pengujian otomatis (automated testing) menggunakan Pest:
 php artisan test
 ```
 
----
-
-## 📄 Lisensi
-Hak Cipta © 2026 PT Rolas Nusantara Medika. Lisensi perangkat lunak di bawah standar perusahaan.
